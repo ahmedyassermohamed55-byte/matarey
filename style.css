@@ -1393,37 +1393,34 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
 }
 
 /* =======================================================
-   إصلاحات عامة للفوتر والخلفية (للكمبيوتر والموبايل)
+   1. إصلاح الفوتر في الكمبيوتر (بدون رفع الموقع أو إخفاء المحتوى)
 ======================================================= */
-html, body, .page-layout, .main-content {
-    min-height: 100vh !important;
-    height: auto !important;
+.main-content {
+    min-height: 100vh !important; /* بيخلي المحتوى يطول لأسفل الشاشة ويدفع الفوتر للأسفل بأمان */
     display: flex !important;
     flex-direction: column !important;
-    background-size: cover !important;
-    background-attachment: fixed !important; /* بيخلي الخلفية البنفسجي ممتدة وماتتقطعش */
 }
-
 .main-footer {
-    margin-top: auto !important; /* بيزق الفوتر لآخر الشاشة ويشيل الفراغ اللي تحته */
-    margin-bottom: 0 !important;
+    margin-top: auto !important; /* بيزق الفوتر لآخر الصفحة ويقفل الفراغ الأبيض */
 }
 
 /* =======================================================
-   التعديل الجذري والنهائي للموبايل (يتوافق مع شاشة 980 بيكسل)
+   2. التعديل الجذري والنهائي للموبايل (يتوافق مع شاشة 980 بيكسل)
 ======================================================= */
 @media screen and (max-width: 980px) {
-
-    /* 1. حل مشكلة المسافة البيضاء السفلية وطول الصفحة */
-    body, html, .page-layout {
+    
+    /* 1. إصلاح طول الشاشة ومنع الفراغ السفلي */
+    body, html {
+        height: auto !important;
+        min-height: 100vh !important;
         overflow-x: hidden !important;
     }
-    
     .page-layout {
         padding-left: 85px !important; 
+        min-height: 100vh !important;
     }
 
-    /* 2. تظبيط القائمة الجانبية وإظهار الخانات المختفية */
+    /* 2. القائمة الجانبية (إظهار الخانات السفلية) */
     .sidhedar {
         height: 100dvh !important; 
         width: 400px !important; 
@@ -1431,17 +1428,13 @@ html, body, .page-layout, .main-content {
         z-index: 10000 !important; 
         overflow: visible !important; 
     }
+    .sidhedar.sidebar-collapsed { width: 85px !important; }
     
-    .sidhedar.sidebar-collapsed {
-        width: 85px !important; 
-    }
-
     .sidebar-nav {
         height: calc(100% - 80px) !important; 
         position: relative !important;
         overflow: visible !important;
     }
-
     .sidebar-nav .primary-nav {
         max-height: calc(100dvh - 250px) !important; 
         overflow-y: auto !important;
@@ -1449,13 +1442,11 @@ html, body, .page-layout, .main-content {
         pointer-events: auto !important; 
         padding-bottom: 20px !important;
     }
-    
     .sidebar-collapsed .sidebar-nav .primary-nav {
         overflow: visible !important; 
         overflow-y: visible !important;
         max-height: none !important; 
     }
-
     .sidebar-nav .secindary-nav {
         position: absolute !important;
         bottom: 0 !important; 
@@ -1468,10 +1459,7 @@ html, body, .page-layout, .main-content {
         border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
 
-    .sidebar-collapsed .nav-item {
-        position: relative !important;
-    }
-
+    .sidebar-collapsed .nav-item { position: relative !important; }
     .sidebar-collapsed .nav-item.touch-hover > .nav-link .nav-label,
     .sidebar-collapsed .nav-item.touch-hover > .dropdown-menu {
         display: block !important;
@@ -1486,60 +1474,58 @@ html, body, .page-layout, .main-content {
         max-width: calc(100vw - 85px) !important; 
     }
 
-    /* 3. تظبيط بلوك "نبذة عن المعهد" ليفرد بالعرض */
+    /* 3. إصلاح النبذة (علشان تفرد بالعرض تماماً وتبطل تتزنق) */
+    .special-page-content {
+        padding: 0 10px !important; /* الكود السحري اللي بيلغي الضغط الجانبي في الموبايل */
+    }
     .section-block {
         width: 100% !important;
         max-width: 100% !important;
-        padding: 0 10px !important;
+        padding: 0 !important;
         margin: 15px 0 !important;
-        box-sizing: border-box !important;
     }
-
     .typing-container {
+        display: block !important;
         width: 100% !important;
         max-width: 100% !important;
-        min-height: auto !important;
         padding: 20px 15px !important; 
-        margin: 0 auto !important;
+        margin: 0 !important;
         border-radius: 8px !important; 
         box-sizing: border-box !important;
-        display: block !important;
     }
-
     .scroll-typing-text {
-        font-size: 18px !important; 
+        display: block !important;
+        font-size: 16px !important; 
         line-height: 1.8 !important;
         text-align: right !important; 
-        white-space: normal !important; /* السطر ده بيخلي الكلام يفرد طبيعي ومينضغطش لتحت */
+        white-space: normal !important; /* بيفرد الكلام ويمنعه ينزل عمودي */
     }
 
-    /* 4. إبعاد جدول المواد عن القائمة وجعله عريضاً ويتحرك باللمس */
+    /* 4. جدول المواد (عريض وقابل للسحب باللمس ومفيش حاجة هتقصه) */
     #subjectsSection {
-        transform: translateX(0) !important; /* لغينا السحب اللي كان بيدخله في القائمة الجانبية */
-        margin-left: 15px !important; 
-        margin-right: 15px !important;
-        width: calc(100% - 30px) !important;
+        transform: translateX(0) !important; 
+        margin-left: 0 !important; 
+        margin-right: 0 !important;
+        width: 100% !important;
+        padding: 0 10px !important;
         box-sizing: border-box !important;
         margin-top: 35px !important;
         margin-bottom: 35px !important;
     }
-
     .glowing-dept-title {
         width: 100% !important;
         box-sizing: border-box !important;
     }
-
-    /* السحر هنا: خلينا الجدول عريض جداً علشان ميبقاش مضغوط */
-    .subjects-table {
-        width: 100% !important;
-        min-width: 780px !important; 
-    }
-
-    /* الحاوية دي بتخليك تسحب الجدول العريض يمين وشمال بصباعك بنعومة */
     .subjects-table-container {
+        display: block !important; /* بيمنع صندوق الجدول إنه يقص المحتوى العريض */
         width: 100% !important;
-        overflow-x: auto !important;
+        max-width: 100% !important; 
+        overflow-x: auto !important; /* بيظهر شريط التمرير للسحب */
         -webkit-overflow-scrolling: touch !important; 
         border-radius: 8px !important;
+    }
+    .subjects-table {
+        width: 100% !important;
+        min-width: 750px !important; /* بيجبر الجدول إنه يفرد بالعرض تماماً */
     }
 }
