@@ -221,35 +221,42 @@ document.querySelectorAll(".sidebar-toggler").forEach(button => {
 // ----------------------------------------------------
 // تفعيل اللمس للموبايل (بديل الماوس عند القائمة المقفولة)
 // ----------------------------------------------------
+// ----------------------------------------------------
+// تفعيل اللمس للموبايل بشكل صحيح وبدون صراعات
+// ----------------------------------------------------
 document.querySelectorAll('.nav-item').forEach(item => {
-    
-    // 1. تفعيل الضغطة (للموبايل أو الكمبيوتر)
     item.addEventListener('click', (e) => {
         const sidebar = document.querySelector('.sidhedar');
+        
+        // التحقق إذا كانت القائمة مقفولة (حالة الموبايل أو الكمبيوتر)
         if (sidebar.classList.contains('sidebar-collapsed')) {
+            
+            // إذا كان العنصر يحتوي على قائمة منسدلة، نمنع الانتقال للرابط
             if (item.classList.contains('dropdown-container')) {
                 e.preventDefault(); 
             }
-            // إغلاق أي خانة تانية مفتوحة
+
+            // التحقق مما إذا كان العنصر مضغوطاً بالفعل
+            const isAlreadyActive = item.classList.contains('touch-hover');
+
+            // إغلاق كل الخانات الأخرى المفتوحة
             document.querySelectorAll('.nav-item.touch-hover').forEach(other => {
-                if (other !== item) other.classList.remove('touch-hover');
+                other.classList.remove('touch-hover');
             });
-            // تفعيل الخانة دي
-            item.classList.toggle('touch-hover');
+
+            // إذا لم يكن نشطاً، قم بتنشيطه. (إذا كان نشطاً سيتم إغلاقه بناءً على الكود السابق)
+            if (!isAlreadyActive) {
+                item.classList.add('touch-hover');
+            }
         }
     });
-
-    // 2. التعديل الجديد: إزالة التعليقة بمجرد خروج الماوس من الخانة
-    item.addEventListener('mouseleave', () => {
-        item.classList.remove('touch-hover');
-    });
-    
 });
 
-
-// إغلاق الخانات المفتوحة باللمس لو ضغطت بره
+// إزالة الـ mouseleave نهائياً من هذا القسم لأنها تدمر تجربة الموبايل
+// والاعتماد فقط على إغلاق القائمة عند الضغط في أي مكان خارجها
 document.addEventListener('click', (e) => {
-    if (!e.target.closest('.nav-item')) {
+    // إذا لم تكن الضغطة داخل القائمة الجانبية، أغلق كل القوائم المنبثقة
+    if (!e.target.closest('.nav-item') && !e.target.closest('.sidebar-toggler')) {
         document.querySelectorAll('.nav-item.touch-hover').forEach(item => {
             item.classList.remove('touch-hover');
         });
