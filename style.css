@@ -453,7 +453,8 @@ body {
     border-radius: 8px;
     background: #EEF2FF;
     transition: 0.4s ease;
-}
+    z-index: 10000; /* التعديل هنا: إجبار الزر على البقاء في الطبقة العليا */
+} ه
 
 .sidebar-header .sidebar-toggler:hover {
     background: #d9e1fd;
@@ -1506,8 +1507,11 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
         left: 85px !important; 
         z-index: 10001 !important; 
         background: var(--sidebar-bg) !important;
-        width: 315px !important; 
+        
+        /* التعديل هنا: استخدام calc ليتكيف مع أي موبايل ولا يخرج عن الشاشة */
+        width: calc(100vw - 85px) !important; 
     }
+
 
     /* ---------------------------------------------------
        5. تعديل جدول "نبذة عن المعهد" ليكون متناسقاً وعريضاً
