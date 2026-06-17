@@ -48,272 +48,266 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // ================= 2. برمجة القائمة الجانبية المنبثقة =================
     const translations = {
-    ar: {
-        college_title: "الكلية التكنولوجية بالمطرية",
-        home: "الصفحة الرئيسية",
-        institutes: "معاهد الكلية",
-        inst_mat_ind: "المعهد الفني الصناعي بالمطرية",
-        inst_mat_com: "المعهد الفني التجاري بالمطرية",
-        inst_shub_ind: "المعهد الفني الصناعي بشبرا",
-        inst_shub_com: "المعهد الفني التجاري بشبرا",
-        inst_mat_tourism: "المعهد الفني للسياحة والفنادق بالمطرية",
-        inst_mat_irrigation: "المعهد الفني للري والصرف والمساحة بالمطرية",
-        student_affairs: "شؤون الطلبة",
-        affairs_info: "معلومات الشؤون",
-        e_services: "الخدمات الإلكترونية",
-        pay_fees: "دفع مصاريف المعهد",
-        get_form: "استخراج الاستمارة",
-        enrollment_cert: "إثبات قيد",
-        metro_form: "استمارة المترو",
-        institute_card: "كارنيه المعهد",
-        materials_cd: "اسطوانة المواد",
-        news: "الأخبار والفعاليات",
-        maps: "موقع المعاهد",
-        about_all: "حول الموقع والمعاهد",
-        about_institutes: "حول المعاهد",
-        about_site: "حول الموقع",
-        contact_us: "تواصل معنا",
-        facebook: "فيس بوك",
-        whatsapp: "واتس اب",
-        email: "البريد الإلكتروني",
-        site_lang: "لغة الموقع",
-        dark_mode: "الوضع الليلي",
-        light_mode: "الوضع الفاتح"
-    },
-    en: {
-        college_title: "Matareya Technological College",
-        home: "Home Page",
-        institutes: "College Institutes",
-        inst_mat_ind: "Matareya Technical Industrial Institute",
-        inst_mat_com: "Matareya Commercial Institute",
-        inst_shub_ind: "Shubra Technical Industrial Institute",
-        inst_shub_com: "Shubra Commercial Institute",
-        inst_mat_tourism: "Matareya Tourism & Hotels Institute",
-        inst_mat_irrigation: "Matareya Irrigation & Drainage Institute",
-        student_affairs: "Student Affairs",
-        affairs_info: "Affairs Information",
-        e_services: "Electronic Services",
-        pay_fees: "Pay Institute Fees",
-        get_form: "Extract the Form",
-        enrollment_cert: "Enrollment Certificate",
-        metro_form: "Metro Form",
-        institute_card: "Institute Card",
-        materials_cd: "Course Materials CD",
-        news: "News & Events",
-        maps: "Institutes Locations",
-        about_all: "About Site & Institutes",
-        about_institutes: "About Institutes",
-        about_site: "About Site",
-        contact_us: "Contact Us",
-        facebook: "Facebook",
-        whatsapp: "WhatsApp",
-        email: "Email Address",
-        site_lang: "Language",
-        dark_mode: "Dark Mode",
-        light_mode: "Light Mode"
-    },
-    de: {
-        college_title: "Technologisches College Matareya",
-        home: "Startseite",
-        institutes: "College-Institute",
-        inst_mat_ind: "Technisches Industrielles Institut Matareya",
-        inst_mat_com: "Kaufmännisches Institut Matareya",
-        inst_shub_ind: "Technisches Industrielles Institut Shubra",
-        inst_shub_com: "Kaufmännisches Institut Shubra",
-        inst_mat_tourism: "Institut für Tourismus & Hotellerie Matareya",
-        inst_mat_irrigation: "Institut für Bewässerung & Vermessung Matareya",
-        student_affairs: "Studierendenangelegenheiten",
-        affairs_info: "Informationen zu Angelegenheiten",
-        e_services: "Elektronische Dienste",
-        pay_fees: "Institutsgebühren bezahlen",
-        get_form: "Formular anfordern",
-        enrollment_cert: "Immatrikulationsbescheinigung",
-        metro_form: "Metro-Formular",
-        institute_card: "Institutsausweis",
-        materials_cd: "Kursmaterialien-CD",
-        news: "Neuigkeiten & Veranstaltungen",
-        maps: "Standorte der Institute",
-        about_all: "Über die Website & Institute",
-        about_institutes: "Über die Institute",
-        about_site: "Über die Website",
-        contact_us: "Kontaktieren Sie uns",
-        facebook: "Facebook",
-        whatsapp: "WhatsApp",
-        email: "E-Mail-Adresse",
-        site_lang: "Sprache",
-        dark_mode: "Dunkelmodus",
-        light_mode: "Hellen Modus"
-    }
-};
+        ar: {
+            college_title: "الكلية التكنولوجية بالمطرية",
+            home: "الصفحة الرئيسية",
+            institutes: "معاهد الكلية",
+            inst_mat_ind: "المعهد الفني الصناعي بالمطرية",
+            inst_mat_com: "المعهد الفني التجاري بالمطرية",
+            inst_shub_ind: "المعهد الفني الصناعي بشبرا",
+            inst_shub_com: "المعهد الفني التجاري بشبرا",
+            inst_mat_tourism: "المعهد الفني للسياحة والفنادق بالمطرية",
+            inst_mat_irrigation: "المعهد الفني للري والصرف والمساحة بالمطرية",
+            student_affairs: "شؤون الطلبة",
+            affairs_info: "معلومات الشؤون",
+            e_services: "الخدمات الإلكترونية",
+            pay_fees: "دفع مصاريف المعهد",
+            get_form: "استخراج الاستمارة",
+            enrollment_cert: "إثبات قيد",
+            metro_form: "استمارة المترو",
+            institute_card: "كارنيه المعهد",
+            materials_cd: "اسطوانة المواد",
+            news: "الأخبار والفعاليات",
+            maps: "موقع المعاهد",
+            about_all: "حول الموقع والمعاهد",
+            about_institutes: "حول المعاهد",
+            about_site: "حول الموقع",
+            contact_us: "تواصل معنا",
+            facebook: "فيس بوك",
+            whatsapp: "واتس اب",
+            email: "البريد الإلكتروني",
+            site_lang: "لغة الموقع",
+            dark_mode: "الوضع الليلي",
+            light_mode: "الوضع الفاتح"
+        },
+        en: {
+            college_title: "Matareya Technological College",
+            home: "Home Page",
+            institutes: "College Institutes",
+            inst_mat_ind: "Matareya Technical Industrial Institute",
+            inst_mat_com: "Matareya Commercial Institute",
+            inst_shub_ind: "Shubra Technical Industrial Institute",
+            inst_shub_com: "Shubra Commercial Institute",
+            inst_mat_tourism: "Matareya Tourism & Hotels Institute",
+            inst_mat_irrigation: "Matareya Irrigation & Drainage Institute",
+            student_affairs: "Student Affairs",
+            affairs_info: "Affairs Information",
+            e_services: "Electronic Services",
+            pay_fees: "Pay Institute Fees",
+            get_form: "Extract the Form",
+            enrollment_cert: "Enrollment Certificate",
+            metro_form: "Metro Form",
+            institute_card: "Institute Card",
+            materials_cd: "Course Materials CD",
+            news: "News & Events",
+            maps: "Institutes Locations",
+            about_all: "About Site & Institutes",
+            about_institutes: "About Institutes",
+            about_site: "About Site",
+            contact_us: "Contact Us",
+            facebook: "Facebook",
+            whatsapp: "WhatsApp",
+            email: "Email Address",
+            site_lang: "Language",
+            dark_mode: "Dark Mode",
+            light_mode: "Light Mode"
+        },
+        de: {
+            college_title: "Technologisches College Matareya",
+            home: "Startseite",
+            institutes: "College-Institute",
+            inst_mat_ind: "Technisches Industrielles Institut Matareya",
+            inst_mat_com: "Kaufmännisches Institut Matareya",
+            inst_shub_ind: "Technisches Industrielles Institut Shubra",
+            inst_shub_com: "Kaufmännisches Institut Shubra",
+            inst_mat_tourism: "Institut für Tourismus & Hotellerie Matareya",
+            inst_mat_irrigation: "Institut für Bewässerung & Vermessung Matareya",
+            student_affairs: "Studierendenangelegenheiten",
+            affairs_info: "Informationen zu Angelegenheiten",
+            e_services: "Elektronische Dienste",
+            pay_fees: "Institutsgebühren bezahlen",
+            get_form: "Formular anfordern",
+            enrollment_cert: "Immatrikulationsbescheinigung",
+            metro_form: "Metro-Formular",
+            institute_card: "Institutsausweis",
+            materials_cd: "Kursmaterialien-CD",
+            news: "Neuigkeiten & Veranstaltungen",
+            maps: "Standorte der Institute",
+            about_all: "Über die Website & Institute",
+            about_institutes: "Über die Institute",
+            about_site: "Über die Website",
+            contact_us: "Kontaktieren Sie uns",
+            facebook: "Facebook",
+            whatsapp: "WhatsApp",
+            email: "E-Mail-Adresse",
+            site_lang: "Sprache",
+            dark_mode: "Dunkelmodus",
+            light_mode: "Hellen Modus"
+        }
+    };
 
-// حساب الطول مع حل مشكلة القوائم المتداخلة بنسبة 100%
-const updateMenuHeight = (menu) => {
-    if (!menu) return;
+    const sidebar = document.querySelector('.sidhedar');
 
-    const isOpen = menu.parentElement.classList.contains("open");
-    
-    if (isOpen) {
-        menu.style.height = menu.scrollHeight + "px";
-    } else {
-        // خطوة ضرورية لإلغاء الفراغ أثناء إغلاق القائمة
-        menu.style.height = menu.scrollHeight + "px";
-        menu.offsetHeight; // تفعيل إعادة رسم المتصفح
-        menu.style.height = "0px";
-    }
+    // حساب طول القوائم (في حالة القائمة المفتوحة بالكامل فقط)
+    const updateMenuHeight = (menu) => {
+        if (!menu) return;
+        const isOpen = menu.parentElement.classList.contains("open");
+        
+        if (isOpen) {
+            menu.style.height = menu.scrollHeight + "px";
+        } else {
+            menu.style.height = menu.scrollHeight + "px";
+            menu.offsetHeight; // تفعيل إعادة رسم المتصفح
+            menu.style.height = "0px";
+        }
 
-    // هنا يتم إخبار القائمة الأب (شؤون الطلبة) بالتمدد والانكماش مع القائمة الداخلية (الخدمات الإلكترونية)
-    let parentMenu = menu.parentElement.closest('.dropdown-menu');
-    if (parentMenu && parentMenu.parentElement.classList.contains("open")) {
-        parentMenu.style.height = "auto";
-    }
-};
+        let parentMenu = menu.parentElement.closest('.dropdown-menu');
+        if (parentMenu && parentMenu.parentElement.classList.contains("open")) {
+            parentMenu.style.height = "auto";
+        }
+    };
 
-const closeAllDropdownsExcept = (currentDropdown) => {
-    document.querySelectorAll(".dropdown-container.open").forEach(openDropdown => {
-        if (openDropdown !== currentDropdown && !openDropdown.contains(currentDropdown)) {
+    // إغلاق كل الخانات المفتوحة للداخل
+    const closeAllDropdownsExcept = (currentDropdown) => {
+        document.querySelectorAll(".dropdown-container.open").forEach(openDropdown => {
+            if (openDropdown !== currentDropdown && !openDropdown.contains(currentDropdown)) {
+                openDropdown.classList.remove("open");
+                const menu = openDropdown.querySelector(":scope > .dropdown-menu");
+                if (menu) menu.style.height = "0px";
+            }
+        });
+    };
+
+    const closeAllDropdowns = () => {
+        document.querySelectorAll(".dropdown-container.open").forEach(openDropdown => {
             openDropdown.classList.remove("open");
             const menu = openDropdown.querySelector(":scope > .dropdown-menu");
             if (menu) menu.style.height = "0px";
-        }
-    });
-};
-
-document.querySelectorAll(".dropdown-toggle").forEach(dropdownToggle => {
-    dropdownToggle.addEventListener("click", e => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        const dropdown = dropdownToggle.parentElement;
-        const menu = dropdown.querySelector(":scope > .dropdown-menu");
-        const isOpen = dropdown.classList.contains("open");
-
-        closeAllDropdownsExcept(dropdown);
-        dropdown.classList.toggle("open", !isOpen);
-        updateMenuHeight(menu);
-    });
-});
-
-const closeAllDropdowns = () => {
-    document.querySelectorAll(".dropdown-container.open").forEach(openDropdown => {
-        openDropdown.classList.remove("open");
-        const menu = openDropdown.querySelector(":scope > .dropdown-menu");
-        if (menu) menu.style.height = "0px";
-    });
-};
-
-document.querySelectorAll(".sidebar-toggler").forEach(button => {
-    button.addEventListener("click", () => {
-        closeAllDropdowns();
-        document.querySelector(".sidhedar").classList.toggle("sidebar-collapsed");
-        
-        // إزالة تأثيرات اللمس عند الإغلاق
-        document.querySelectorAll('.nav-item.touch-hover').forEach(item => {
-            item.classList.remove('touch-hover');
         });
-    });
-});
+    };
 
-// إعداد القائمة بشكل افتراضي مصغر للموبايل
-
-// ----------------------------------------------------
-// تفعيل اللمس للموبايل (بديل الماوس عند القائمة المقفولة)
-// ----------------------------------------------------
-// ----------------------------------------------------
-// تفعيل اللمس للموبايل (بديل الماوس عند القائمة المقفولة)
-// ----------------------------------------------------
-// ----------------------------------------------------
-// تفعيل اللمس للموبايل بشكل صحيح وبدون صراعات
-// ----------------------------------------------------
-document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', (e) => {
-        const sidebar = document.querySelector('.sidhedar');
-        
-        // التحقق إذا كانت القائمة مقفولة (حالة الموبايل أو الكمبيوتر)
-        if (sidebar.classList.contains('sidebar-collapsed')) {
+    // زر إظهار/إخفاء القائمة بالكامل (الزر الموجود بجانب اللوجو)
+    document.querySelectorAll(".sidebar-toggler").forEach(button => {
+        button.addEventListener("click", (e) => {
+            e.stopPropagation();
+            closeAllDropdowns();
+            sidebar.classList.toggle("sidebar-collapsed");
             
-            // إذا كان العنصر يحتوي على قائمة منسدلة، نمنع الانتقال للرابط
-            if (item.classList.contains('dropdown-container')) {
-                e.preventDefault(); 
-            }
-
-            // التحقق مما إذا كان العنصر مضغوطاً بالفعل
-            const isAlreadyActive = item.classList.contains('touch-hover');
-
-            // إغلاق كل الخانات الأخرى المفتوحة
-            document.querySelectorAll('.nav-item.touch-hover').forEach(other => {
-                other.classList.remove('touch-hover');
+            // مسح أي نافذة منبثقة معلقة من اللمس عند تكبير وتصغير القائمة
+            document.querySelectorAll('.nav-item.touch-hover').forEach(item => {
+                item.classList.remove('touch-hover');
             });
+        });
+    });
 
-            // إذا لم يكن نشطاً، قم بتنشيطه. (إذا كان نشطاً سيتم إغلاقه بناءً على الكود السابق)
-            if (!isAlreadyActive) {
-                item.classList.add('touch-hover');
+    // السحر الحقيقي لحل مشكلة اللمس والموبايل بدون تعارض وبدون تغيير الحجم
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
+            const isDropdown = item.classList.contains('dropdown-container');
+            const clickedLink = e.target.closest('.nav-link');
+
+            // === الحالة الأولى: القائمة الجانبية مقفولة (شكل الأيقونات) ===
+            // هذا ما يحدث على الموبايل أو عند إغلاق القائمة في الكمبيوتر
+            if (isCollapsed) {
+                // نتأكد أن الضغطة كانت على الرابط الأساسي للخانة
+                if (clickedLink && clickedLink.parentElement === item) {
+                    
+                    if (isDropdown) e.preventDefault(); // نمنع تحديث الصفحة لو كانت قائمة منسدلة
+                    
+                    const isAlreadyActive = item.classList.contains('touch-hover');
+
+                    // نقفل أي خانة تانية كانت مفتوحة لبره
+                    document.querySelectorAll('.nav-item.touch-hover').forEach(other => {
+                        if (other !== item) other.classList.remove('touch-hover');
+                    });
+
+                    // نفتح الخانة التي ضغطنا عليها لبره (تأثير اللمس)
+                    if (!isAlreadyActive) {
+                        item.classList.add('touch-hover');
+                    }
+                }
+                
+                // مهم جداً: نوقف الحدث هنا لكي لا ينفذ أكواد الحالة الثانية ويفسد اللمس
+                e.stopPropagation();
+            } 
+            // === الحالة الثانية: القائمة الجانبية مفتوحة بالكامل ===
+            // هنا القوائم تفتح للأسفل (أكورديون)
+            else {
+                const isDropdownToggle = e.target.closest('.dropdown-toggle');
+                
+                if (isDropdown && isDropdownToggle) {
+                    e.preventDefault();
+                    e.stopPropagation(); // هنا وضعناه بأمان لأنه لن يؤثر على الموبايل
+
+                    const menu = item.querySelector(":scope > .dropdown-menu");
+                    const isOpen = item.classList.contains("open");
+
+                    closeAllDropdownsExcept(item);
+                    item.classList.toggle("open", !isOpen);
+                    updateMenuHeight(menu);
+                }
             }
+        });
+    });
+
+    // إغلاق النوافذ المنبثقة للبره عند الضغط في أي مكان فاضي في الموقع
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.nav-item') && !e.target.closest('.sidebar-toggler')) {
+            document.querySelectorAll('.nav-item.touch-hover').forEach(item => {
+                item.classList.remove('touch-hover');
+            });
         }
     });
-});
 
-// إزالة الـ mouseleave نهائياً من هذا القسم لأنها تدمر تجربة الموبايل
-// والاعتماد فقط على إغلاق القائمة عند الضغط في أي مكان خارجها
-document.addEventListener('click', (e) => {
-    // إذا لم تكن الضغطة داخل القائمة الجانبية، أغلق كل القوائم المنبثقة
-    if (!e.target.closest('.nav-item') && !e.target.closest('.sidebar-toggler')) {
-        document.querySelectorAll('.nav-item.touch-hover').forEach(item => {
-            item.classList.remove('touch-hover');
+    // ----------------------------------------------------
+    // اللغات والوضع الليلي
+    // ----------------------------------------------------
+    document.querySelectorAll(".lang-selector").forEach(langBtn => {
+        langBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const selectedLang = langBtn.getAttribute("data-lang");
+            
+            if (selectedLang === "ar") {
+                document.documentElement.setAttribute("dir", "rtl");
+                document.documentElement.setAttribute("lang", "ar");
+            } else {
+                document.documentElement.setAttribute("dir", "ltr");
+                document.documentElement.setAttribute("lang", selectedLang);
+            }
+
+            document.querySelectorAll("[data-i18n]").forEach(element => {
+                const key = element.getAttribute("data-i18n");
+                if (translations[selectedLang][key]) {
+                    element.textContent = translations[selectedLang][key];
+                }
+            });
+            
+            closeAllDropdowns();
         });
-    }
-});
+    });
 
-// ----------------------------------------------------
-// اللغات والوضع الليلي
-// ----------------------------------------------------
-document.querySelectorAll(".lang-selector").forEach(langBtn => {
-    langBtn.addEventListener("click", (e) => {
+    const themeToggleBtn = document.getElementById("theme-toggle-btn");
+    const themeIcon = document.getElementById("theme-icon");
+    const themeText = document.getElementById("theme-text");
+
+    themeToggleBtn.addEventListener("click", (e) => {
         e.preventDefault();
-        const selectedLang = langBtn.getAttribute("data-lang");
+        document.body.classList.toggle("dark-theme");
         
-        if (selectedLang === "ar") {
-            document.documentElement.setAttribute("dir", "rtl");
-            document.documentElement.setAttribute("lang", "ar");
+        const isDark = document.body.classList.contains("dark-theme");
+        const currentLang = document.documentElement.getAttribute("lang") || "ar";
+        
+        if (isDark) {
+            themeIcon.textContent = "light_mode";
+            themeText.textContent = translations[currentLang]["light_mode"];
+            themeText.setAttribute("data-i18n", "light_mode");
         } else {
-            document.documentElement.setAttribute("dir", "ltr");
-            document.documentElement.setAttribute("lang", selectedLang);
+            themeIcon.textContent = "dark_mode";
+            themeText.textContent = translations[currentLang]["dark_mode"];
+            themeText.setAttribute("data-i18n", "dark_mode");
         }
-
-        document.querySelectorAll("[data-i18n]").forEach(element => {
-            const key = element.getAttribute("data-i18n");
-            if (translations[selectedLang][key]) {
-                element.textContent = translations[selectedLang][key];
-            }
-        });
-        
-        closeAllDropdowns();
     });
-});
-
-const themeToggleBtn = document.getElementById("theme-toggle-btn");
-const themeIcon = document.getElementById("theme-icon");
-const themeText = document.getElementById("theme-text");
-
-themeToggleBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    document.body.classList.toggle("dark-theme");
-    
-    const isDark = document.body.classList.contains("dark-theme");
-    const currentLang = document.documentElement.getAttribute("lang") || "ar";
-    
-    if (isDark) {
-        themeIcon.textContent = "light_mode";
-        themeText.textContent = translations[currentLang]["light_mode"];
-        themeText.setAttribute("data-i18n", "light_mode");
-    } else {
-        themeIcon.textContent = "dark_mode";
-        themeText.textContent = translations[currentLang]["dark_mode"];
-        themeText.setAttribute("data-i18n", "dark_mode");
-    }
-});
-
-
-    // ================= 3. برمجة تقليب الأخبار (Pagination) =================
     const newsItems = document.querySelectorAll('.news-item');
     const prevBtn = document.getElementById('prevPageBtn');
     const nextBtn = document.getElementById('nextPageBtn');
