@@ -1398,69 +1398,89 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
    تعديلات الهواتف المحمولة (مع الاحتفاظ بعرض 960 بيكسل)
    باستخدام Device Width بدلاً من Viewport Width
 ======================================================= */
-@media screen and (max-device-width: 900px), (pointer: coarse) {
+/* =======================================================
+   تعديلات الهواتف المحمولة (مع الاحتفاظ بعرض 960 بيكسل)
+======================================================= */
+@media screen and (max-device-width: 900px) {
     
     /* ---------------------------------------------------
-       1. حل مشكلة المساحة الفاضية ورفع المحتوى والفوتر
+       1. حل مشكلة تداخل الزرار مع نبذة عن المعهد والفرقة
        --------------------------------------------------- */
     .special-page-content {
-        margin-top: 100px !important; /* تقليل الفراغ العلوي الضخم */
+        /* تم زيادة المسافة إلى 280 بيكسل لضمان نزول النبذة والفرقة تحت الزرار تماما */
+        margin-top: 280px !important; 
         padding: 0 20px !important;
     }
 
-    .main-footer {
-        margin-top: 30px !important; /* سحب الفوتر ليكون أسفل المحتوى مباشرة */
-        padding: 20px !important;
-    }
-
     /* ---------------------------------------------------
-       2. حل مشكلة القائمة الجانبية وإظهار الوضع الليلي
-       --------------------------------------------------- */
-    .sidebar-nav {
-        height: 100vh !important; /* ضمان تغطية الشاشة بالكامل */
-        position: relative !important; /* نقطة ارتكاز للقائمة السفلية */
-        overflow: hidden !important; /* منع أي تمدد غير مرغوب فيه */
-    }
-
-    .sidebar-nav .primary-nav {
-        /* إعطاء مساحة محددة للقائمة العلوية مع شريط تمرير إذا طالت */
-        max-height: calc(100vh - 180px) !important; 
-        overflow-y: auto !important;
-    }
-
-    .sidebar-nav .secindary-nav {
-        /* تثبيت قائمة الوضع الليلي في قاع الشاشة إجبارياً */
-        position: absolute !important;
-        bottom: 20px !important;
-        left: 0;
-        right: 0;
-        width: 100% !important;
-        background-color: inherit; /* لضمان توافق لون الخلفية */
-        z-index: 999;
-    }
-
-    /* ---------------------------------------------------
-       3. حل مشكلة مربع (نبذة عن المعهد) ليكون عريض ومربع
+       2. حل مشكلة الفوتر والمساحة البيضاء السفلية
        --------------------------------------------------- */
     .special-page-container {
         width: 100% !important;
-        padding-left: 60px !important; /* مسافة لعدم التداخل مع القائمة الجانبية */
+        padding-left: 60px !important;
+        /* إلغاء المساحة الفاضية التي كانت موجودة تحت الفوتر نهائيا */
+        padding-bottom: 0 !important; 
     }
 
+    .main-footer {
+        /* إنزال الفوتر للأسفل بمسافة مريحة للعين */
+        margin-top: 80px !important; 
+        margin-bottom: 0 !important;
+        padding: 20px !important;
+    }
+
+    /* ---------------------------------------------------
+       3. إحياء القائمة الجانبية وضبط طولها لتبدأ من الأسفل
+       --------------------------------------------------- */
+    .sidhedar {
+        height: 100vh !important;
+    }
+    
+    .sidebar-nav {
+        /* خصم مساحة اللوجو لضبط الطول الكلي */
+        height: calc(100% - 80px) !important; 
+        position: relative !important;
+        /* السماح للقوائم المنبثقة بالظهور وتفعيل حساسات اللمس */
+        overflow: visible !important; 
+    }
+
+    .sidebar-nav .primary-nav {
+        /* ترك مساحة سفلية محددة لقائمة تواصل معنا والوضع الليلي */
+        max-height: calc(100% - 130px) !important; 
+        overflow-y: auto !important;
+        /* تفعيل الضغط واللمس مجددا لتفتح القوائم بشكل طبيعي */
+        pointer-events: auto !important; 
+    }
+
+    .sidebar-nav .secindary-nav {
+        position: absolute !important;
+        /* تثبيت قائمة الوضع الليلي بالأسفل تماما مع حافة الشاشة */
+        bottom: 0 !important; 
+        left: 0;
+        right: 0;
+        width: 100% !important;
+        background-color: var(--sidebar-bg) !important;
+        z-index: 9999 !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* ---------------------------------------------------
+       4. الحفاظ على المربع الخاص بالنبذة عريضا
+       --------------------------------------------------- */
     .typing-container {
         width: 100% !important;
-        max-width: 900px !important; /* لجعله مفروداً وعريضاً */
+        max-width: 900px !important;
         min-height: auto !important;
         padding: 20px !important;
         margin: 0 auto !important;
-        border-radius: 4px !important; /* دوران خفيف جداً أقرب للمربع الحاد */
+        border-radius: 4px !important;
         box-sizing: border-box !important;
     }
     
     .scroll-typing-text {
-        font-size: 18px !important; /* تكبير الخط قليلاً ليكون مقروءاً مع تصغير الشاشة لـ 960 */
+        font-size: 18px !important;
         line-height: 1.8 !important;
         text-align: right !important;
-        border-radius: 4px !important; /* شكل المربع الحاد */
+        border-radius: 4px !important;
     }
 }
