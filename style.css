@@ -1393,58 +1393,43 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
 }
 
 /* =======================================================
+   إصلاحات عامة للفوتر والخلفية (للكمبيوتر والموبايل)
+======================================================= */
+html, body, .page-layout, .main-content {
+    min-height: 100vh !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background-size: cover !important;
+    background-attachment: fixed !important; /* بيخلي الخلفية البنفسجي ممتدة وماتتقطعش */
+}
+
+.main-footer {
+    margin-top: auto !important; /* بيزق الفوتر لآخر الشاشة ويشيل الفراغ اللي تحته */
+    margin-bottom: 0 !important;
+}
+
+/* =======================================================
    التعديل الجذري والنهائي للموبايل (يتوافق مع شاشة 980 بيكسل)
 ======================================================= */
 @media screen and (max-width: 980px) {
 
-    /* ---------------------------------------------------
-       1. حل مشكلة المسافة البيضاء السفلية وطول الصفحة
-       - هنا نمنع المتصفح من عمل مساحات وهمية ونضبط الطول الحقيقي للشاشة
-       --------------------------------------------------- */
-    /* ---------------------------------------------------
-       1. حل مشكلة المسافة البيضاء السفلية وطول الصفحة
-       --------------------------------------------------- */
-    body, html {
-        height: 100% !important; /* إرجاع الطول لـ 100% لمنع الفراغات */
-        min-height: 100dvh !important; 
+    /* 1. حل مشكلة المسافة البيضاء السفلية وطول الصفحة */
+    body, html, .page-layout {
         overflow-x: hidden !important;
-        background-attachment: scroll !important; 
     }
-
+    
     .page-layout {
-        min-height: 100dvh !important; /* إجبار الحاوية على ملء الشاشة */
-        height: auto !important;
         padding-left: 85px !important; 
-        overflow: hidden !important; 
     }
 
-    /* ---------------------------------------------------
-       3. حل مشكلة الفوتر (الالتصاق الدائم بالقاع وقص الفراغ)
-       --------------------------------------------------- */
-    .main-content {
-        display: flex !important;
-        flex-direction: column !important;
-        min-height: 100dvh !important; /* السر هنا: تمدد المحتوى لملء الشاشة */
-    }
-
-    .main-footer {
-        margin-top: auto !important; /* هذا الأمر يدفع الفوتر لأقصى القاع ويقص أي فراغ تحته */
-        margin-bottom: 0 !important; 
-        padding: 30px 20px !important;
-        position: relative !important;
-        z-index: 10 !important;
-    }
-
-    /* ---------------------------------------------------
-       4. حل مشكلة القائمة الجانبية وإظهار الخانات المختفية
-       --------------------------------------------------- */
+    /* 2. تظبيط القائمة الجانبية وإظهار الخانات المختفية */
     .sidhedar {
-        height: 100dvh !important; /* ربط طول القائمة بالشاشة المرئية بالضبط */
+        height: 100dvh !important; 
         width: 400px !important; 
         max-width: 100vw !important; 
         z-index: 10000 !important; 
         overflow: visible !important; 
-        /* تم إزالة الكيرف (border-radius) بناءً على طلبك */
     }
     
     .sidhedar.sidebar-collapsed {
@@ -1452,7 +1437,7 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
     }
 
     .sidebar-nav {
-        height: calc(100% - 80px) !important; /* تغيير من vh إلى % ليتوافق مع القائمة الأب ويمنع دفن الخانات */
+        height: calc(100% - 80px) !important; 
         position: relative !important;
         overflow: visible !important;
     }
@@ -1471,18 +1456,16 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
         max-height: none !important; 
     }
 
-    /* تثبيت شريط "تواصل معنا" أسفل الشاشة وإظهاره بشكل صحيح */
     .sidebar-nav .secindary-nav {
         position: absolute !important;
-        bottom: 0 !important; /* الآن ستلتصق بنهاية القائمة المرئية ولن تختفي */
+        bottom: 0 !important; 
         left: 0 !important;
         right: 0 !important;
         width: 100% !important;
         z-index: 10005 !important; 
         background-color: var(--sidebar-bg) !important;
-        padding-bottom: 20px !important; /* ضبط المسافة السفلية لراحة العين */
+        padding-bottom: 20px !important; 
         border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-        /* تم إزالة الكيرف (border-radius) بناءً على طلبك */
     }
 
     .sidebar-collapsed .nav-item {
@@ -1503,63 +1486,60 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
         max-width: calc(100vw - 85px) !important; 
     }
 
-
-
-
-    /* ---------------------------------------------------
-       5. تعديل جدول "نبذة عن المعهد" ليكون متناسقاً وعريضاً
-       --------------------------------------------------- */
-    /* ---------------------------------------------------
-       5. تظبيط "نبذة عن المعهد" علشان يفرد بالعرض
-       --------------------------------------------------- */
+    /* 3. تظبيط بلوك "نبذة عن المعهد" ليفرد بالعرض */
     .section-block {
         width: 100% !important;
+        max-width: 100% !important;
         padding: 0 10px !important;
+        margin: 15px 0 !important;
+        box-sizing: border-box !important;
     }
 
     .typing-container {
         width: 100% !important;
         max-width: 100% !important;
         min-height: auto !important;
-        /* قللنا الـ padding سنة علشان ندي مساحة للكلام يفرد براحته */
-        padding: 15px 10px !important; 
-        margin: 0 !important;
+        padding: 20px 15px !important; 
+        margin: 0 auto !important;
         border-radius: 8px !important; 
         box-sizing: border-box !important;
+        display: block !important;
     }
 
     .scroll-typing-text {
-        /* صغرنا الخط درجتين علشان الكلمات متتضغطش وتنزل تحت بعض في الموبايل */
-        font-size: 16px !important; 
+        font-size: 18px !important; 
         line-height: 1.8 !important;
         text-align: right !important; 
+        white-space: normal !important; /* السطر ده بيخلي الكلام يفرد طبيعي ومينضغطش لتحت */
     }
 
-    /* ---------------------------------------------------
-       6. إبعاد جدول المواد وعنوان الشعبة عن القائمة الجانبية
-       --------------------------------------------------- */
+    /* 4. إبعاد جدول المواد عن القائمة وجعله عريضاً ويتحرك باللمس */
     #subjectsSection {
-        /* السطر ده هو السحر: بيلغي السحب ناحية الشمال اللي كان شغال في الكمبيوتر */
-        transform: translateX(0) !important; 
-        /* المسافة دي هتبعد الجدول والعنوان عن القائمة الجانبية وتخليهم في النص */
+        transform: translateX(0) !important; /* لغينا السحب اللي كان بيدخله في القائمة الجانبية */
         margin-left: 15px !important; 
-        width: calc(100% - 15px) !important;
-        margin-top: 40px !important;
-        margin-bottom: 40px !important;
+        margin-right: 15px !important;
+        width: calc(100% - 30px) !important;
+        box-sizing: border-box !important;
+        margin-top: 35px !important;
+        margin-bottom: 35px !important;
     }
 
     .glowing-dept-title {
-        font-size: 18px !important;
-        padding: 10px !important;
         width: 100% !important;
         box-sizing: border-box !important;
     }
 
-    .subjects-table-container {
+    /* السحر هنا: خلينا الجدول عريض جداً علشان ميبقاش مضغوط */
+    .subjects-table {
         width: 100% !important;
-        /* لو الجدول لسه عريض على الموبايل، الخاصية دي هتخليك تقدر تسحبه بصباعك يمين وشمال بسلاسة */
-        overflow-x: auto !important; 
-        -webkit-overflow-scrolling: touch !important;
+        min-width: 780px !important; 
     }
 
-} /* هذا القوس يغلق ميديا كويري 980px - لا تمسحه */
+    /* الحاوية دي بتخليك تسحب الجدول العريض يمين وشمال بصباعك بنعومة */
+    .subjects-table-container {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important; 
+        border-radius: 8px !important;
+    }
+}
