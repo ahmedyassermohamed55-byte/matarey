@@ -1401,86 +1401,109 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
 /* =======================================================
    تعديلات الهواتف المحمولة (مع الاحتفاظ بعرض 960 بيكسل)
 ======================================================= */
-@media screen and (max-device-width: 900px) {
-    
+/* =======================================================
+   التعديل الجذري والنهائي للموبايل (يتوافق مع شاشة 960 بيكسل)
+======================================================= */
+@media screen and (max-width: 980px) {
+
     /* ---------------------------------------------------
-       1. حل مشكلة تداخل الزرار مع نبذة عن المعهد والفرقة
+       1. حل مشكلة تداخل زر المعهد مع النبذة والفرقة
+       (المسافة كانت صغيرة، فالمحتوى دخل تحت الزرار، هنا كبرناها جداً)
        --------------------------------------------------- */
     .special-page-content {
-        /* تم زيادة المسافة إلى 280 بيكسل لضمان نزول النبذة والفرقة تحت الزرار تماما */
-        margin-top: 280px !important; 
-        padding: 0 20px !important;
+        margin-top: 500px !important; /* زقينا النبذة لتحت خالص عشان تبعد عن الزرار */
+        padding: 0 15px !important;
+    }
+
+    .special-page-container {
+        padding-left: 90px !important; /* إبعاد المحتوى عن القائمة الجانبية المقفولة */
+        padding-bottom: 0 !important; /* مسح أي مساحات فاضية من تحت */
+        width: 100% !important;
+        min-height: auto !important;
     }
 
     /* ---------------------------------------------------
-       2. حل مشكلة الفوتر والمساحة البيضاء السفلية
+       2. حل مشكلة الفوتر والمساحات الفاضية اللي تحته
        --------------------------------------------------- */
-    .special-page-container {
-        width: 100% !important;
-        padding-left: 60px !important;
-        /* إلغاء المساحة الفاضية التي كانت موجودة تحت الفوتر نهائيا */
-        padding-bottom: 0 !important; 
+    body, html {
+        height: auto !important; 
+        min-height: auto !important;
+    }
+
+    .page-layout {
+        min-height: auto !important;
+        height: auto !important;
+        padding-left: 90px !important; /* حماية المحتوى من القائمة الجانبية */
     }
 
     .main-footer {
-        /* إنزال الفوتر للأسفل بمسافة مريحة للعين */
-        margin-top: 80px !important; 
-        margin-bottom: 0 !important;
-        padding: 20px !important;
+        margin-top: 60px !important; /* تنزيل الفوتر مسافة مناسبة تحت المحتوى */
+        margin-bottom: 0 !important; /* إزالة أي فراغ تحت الفوتر */
+        padding: 30px 20px !important;
+        position: relative !important;
+        z-index: 10 !important;
     }
 
     /* ---------------------------------------------------
-       3. إحياء القائمة الجانبية وضبط طولها لتبدأ من الأسفل
+       3. إحياء القائمة الجانبية وتثبيتها من الأعلى للأسفل
+       (الموبايل كان بيتجاهل أكواد القائمة، هنا أجبرناه يشغلها)
        --------------------------------------------------- */
     .sidhedar {
         height: 100vh !important;
+        width: 100% !important;
+        overflow: visible !important; /* السماح للقوائم تفتح بشكل طبيعي */
     }
     
+    .sidhedar.sidebar-collapsed {
+        width: 85px !important; /* تثبيت عرضها وهي مقفولة */
+    }
+
     .sidebar-nav {
-        /* خصم مساحة اللوجو لضبط الطول الكلي */
-        height: calc(100% - 80px) !important; 
+        height: calc(100vh - 80px) !important;
         position: relative !important;
-        /* السماح للقوائم المنبثقة بالظهور وتفعيل حساسات اللمس */
-        overflow: visible !important; 
+        overflow: visible !important;
     }
 
     .sidebar-nav .primary-nav {
-        /* ترك مساحة سفلية محددة لقائمة تواصل معنا والوضع الليلي */
-        max-height: calc(100% - 130px) !important; 
+        max-height: calc(100vh - 220px) !important; /* تقصير القائمة العلوية عشان متزقش السفلية */
         overflow-y: auto !important;
-        /* تفعيل الضغط واللمس مجددا لتفتح القوائم بشكل طبيعي */
-        pointer-events: auto !important; 
+        pointer-events: auto !important; /* إعادة تفعيل اللمس والضغط */
+        padding-bottom: 20px !important;
     }
 
     .sidebar-nav .secindary-nav {
         position: absolute !important;
-        /* تثبيت قائمة الوضع الليلي بالأسفل تماما مع حافة الشاشة */
-        bottom: 0 !important; 
-        left: 0;
-        right: 0;
+        bottom: 0 !important; /* تثبيتها في أسفل الشاشة بالمللي */
+        left: 0 !important;
+        right: 0 !important;
         width: 100% !important;
-        background-color: var(--sidebar-bg) !important;
         z-index: 9999 !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: var(--sidebar-bg) !important;
+        padding-bottom: 20px !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
     }
 
     /* ---------------------------------------------------
-       4. الحفاظ على المربع الخاص بالنبذة عريضا
+       4. تعديل جدول "نبذة عن المعهد" ليكون مربع وعريض
        --------------------------------------------------- */
+    .section-block {
+        width: 100% !important;
+    }
+
     .typing-container {
         width: 100% !important;
-        max-width: 900px !important;
+        max-width: 100% !important;
         min-height: auto !important;
         padding: 20px !important;
-        margin: 0 auto !important;
-        border-radius: 4px !important;
+        margin: 0 !important;
+        border-radius: 8px !important; /* تقليل الدوران ليصبح مربعاً */
         box-sizing: border-box !important;
     }
-    
+
     .scroll-typing-text {
-        font-size: 18px !important;
+        font-size: 20px !important;
         line-height: 1.8 !important;
-        text-align: right !important;
-        border-radius: 4px !important;
+        text-align: right !important; /* ضبط السطور لتملأ المربع */
+        border-radius: 8px !important;
     }
 }
