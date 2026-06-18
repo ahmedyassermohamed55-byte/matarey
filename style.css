@@ -1,1208 +1,1824 @@
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // ================= 1. تسلسل الأنيميشن عند فتح الموقع =================
-    const ring = document.getElementById('animatedRing');
-    const textWrapper = document.getElementById('animatedText');
-    const heroBg = document.getElementById('heroBg');
-    const cascadeItems = document.querySelectorAll('.cascade-item');
-
-    // 1. تشغيل تأثير البوابة الزمنية (الغسالة) فوراً
-    setTimeout(() => {
-        ring.classList.add('spin-anim');
-    }, 100);
-
-    // 2. ظهور النص بعد 1.2 ثانية (في اللحظة التي تفتح فيها البوابة وتستقر)
-    setTimeout(() => {
-        textWrapper.classList.add('text-loaded');
-    }, 1200);
-
-    // 3. ظهور الخلفية بتأثير الـ Blur بعد 1.5 ثانية
-    setTimeout(() => {
-        heroBg.classList.add('bg-loaded');
-    }, 1500);
-
-    // 4. ظهور باقي العناصر المتتالية (الأزرار والأخبار)
-    // 4. ظهور باقي العناصر المتتالية (الأزرار والأخبار)
-    setTimeout(() => {
-        cascadeItems.forEach((item, index) => {
-            setTimeout(() => {
-                item.classList.add('visible');
-            }, index * 200); 
-        });
-        
-        // التعديل هنا: كود إظهار الشريط العلوي مع باقي العناصر
-        const topBar = document.querySelector('.fixed-top-bar');
-        if(topBar) {
-            topBar.classList.add('show-bar');
-        }
-    }, 2000);
-
-    // 5. ظهور القائمة الجانبية مقفولة بعد الانتهاء من كل الأنيميشن (عند الثانية 2.5)
-    setTimeout(() => {
-        const sidebar = document.querySelector('.sidhedar');
-        if(sidebar) {
-            sidebar.classList.add('show-after-load');
-        }
-    }, 3000);
-
-
-    // ================= 2. برمجة القائمة الجانبية المنبثقة =================
-    const translations = {
-        ar: {
-            college_title: "الكلية التكنولوجية بالمطرية",
-            home: "الصفحة الرئيسية",
-            institutes: "معاهد الكلية",
-            inst_mat_ind: "المعهد الفني الصناعي بالمطرية",
-            inst_mat_com: "المعهد الفني التجاري بالمطرية",
-            inst_shub_ind: "المعهد الفني الصناعي بشبرا",
-            inst_shub_com: "المعهد الفني التجاري بشبرا",
-            inst_mat_tourism: "المعهد الفني للسياحة والفنادق بالمطرية",
-            inst_mat_irrigation: "المعهد الفني للري والصرف والمساحة بالمطرية",
-            student_affairs: "شؤون الطلبة",
-            affairs_info: "معلومات الشؤون",
-            e_services: "الخدمات الإلكترونية",
-            pay_fees: "دفع مصاريف المعهد",
-            get_form: "استخراج الاستمارة",
-            enrollment_cert: "إثبات قيد",
-            metro_form: "استمارة المترو",
-            institute_card: "كارنيه المعهد",
-            materials_cd: "اسطوانة المواد",
-            news: "الأخبار والفعاليات",
-            maps: "موقع المعاهد",
-            about_all: "حول الموقع والمعاهد",
-            about_institutes: "حول المعاهد",
-            about_site: "حول الموقع",
-            contact_us: "تواصل معنا",
-            facebook: "فيس بوك",
-            whatsapp: "واتس اب",
-            email: "البريد الإلكتروني",
-            site_lang: "لغة الموقع",
-            dark_mode: "الوضع الليلي",
-            light_mode: "الوضع الفاتح"
-        },
-        en: {
-            college_title: "Matareya Technological College",
-            home: "Home Page",
-            institutes: "College Institutes",
-            inst_mat_ind: "Matareya Technical Industrial Institute",
-            inst_mat_com: "Matareya Commercial Institute",
-            inst_shub_ind: "Shubra Technical Industrial Institute",
-            inst_shub_com: "Shubra Commercial Institute",
-            inst_mat_tourism: "Matareya Tourism & Hotels Institute",
-            inst_mat_irrigation: "Matareya Irrigation & Drainage Institute",
-            student_affairs: "Student Affairs",
-            affairs_info: "Affairs Information",
-            e_services: "Electronic Services",
-            pay_fees: "Pay Institute Fees",
-            get_form: "Extract the Form",
-            enrollment_cert: "Enrollment Certificate",
-            metro_form: "Metro Form",
-            institute_card: "Institute Card",
-            materials_cd: "Course Materials CD",
-            news: "News & Events",
-            maps: "Institutes Locations",
-            about_all: "About Site & Institutes",
-            about_institutes: "About Institutes",
-            about_site: "About Site",
-            contact_us: "Contact Us",
-            facebook: "Facebook",
-            whatsapp: "WhatsApp",
-            email: "Email Address",
-            site_lang: "Language",
-            dark_mode: "Dark Mode",
-            light_mode: "Light Mode"
-        },
-        de: {
-            college_title: "Technologisches College Matareya",
-            home: "Startseite",
-            institutes: "College-Institute",
-            inst_mat_ind: "Technisches Industrielles Institut Matareya",
-            inst_mat_com: "Kaufmännisches Institut Matareya",
-            inst_shub_ind: "Technisches Industrielles Institut Shubra",
-            inst_shub_com: "Kaufmännisches Institut Shubra",
-            inst_mat_tourism: "Institut für Tourismus & Hotellerie Matareya",
-            inst_mat_irrigation: "Institut für Bewässerung & Vermessung Matareya",
-            student_affairs: "Studierendenangelegenheiten",
-            affairs_info: "Informationen zu Angelegenheiten",
-            e_services: "Elektronische Dienste",
-            pay_fees: "Institutsgebühren bezahlen",
-            get_form: "Formular anfordern",
-            enrollment_cert: "Immatrikulationsbescheinigung",
-            metro_form: "Metro-Formular",
-            institute_card: "Institutsausweis",
-            materials_cd: "Kursmaterialien-CD",
-            news: "Neuigkeiten & Veranstaltungen",
-            maps: "Standorte der Institute",
-            about_all: "Über die Website & Institute",
-            about_institutes: "Über die Institute",
-            about_site: "Über die Website",
-            contact_us: "Kontaktieren Sie uns",
-            facebook: "Facebook",
-            whatsapp: "WhatsApp",
-            email: "E-Mail-Adresse",
-            site_lang: "Sprache",
-            dark_mode: "Dunkelmodus",
-            light_mode: "Hellen Modus"
-        }
-    };
-
-    const sidebar = document.querySelector('.sidhedar');
-
-    // حساب طول القوائم (في حالة القائمة المفتوحة بالكامل فقط)
-    const updateMenuHeight = (menu) => {
-        if (!menu) return;
-        const isOpen = menu.parentElement.classList.contains("open");
-        
-        if (isOpen) {
-            menu.style.height = menu.scrollHeight + "px";
-        } else {
-            menu.style.height = menu.scrollHeight + "px";
-            menu.offsetHeight; // تفعيل إعادة رسم المتصفح
-            menu.style.height = "0px";
-        }
-
-        let parentMenu = menu.parentElement.closest('.dropdown-menu');
-        if (parentMenu && parentMenu.parentElement.classList.contains("open")) {
-            parentMenu.style.height = "auto";
-        }
-    };
-
-    // إغلاق كل الخانات المفتوحة للداخل
-    const closeAllDropdownsExcept = (currentDropdown) => {
-        document.querySelectorAll(".dropdown-container.open").forEach(openDropdown => {
-            if (openDropdown !== currentDropdown && !openDropdown.contains(currentDropdown)) {
-                openDropdown.classList.remove("open");
-                const menu = openDropdown.querySelector(":scope > .dropdown-menu");
-                if (menu) menu.style.height = "0px";
-            }
-        });
-    };
-
-    const closeAllDropdowns = () => {
-        document.querySelectorAll(".dropdown-container.open").forEach(openDropdown => {
-            openDropdown.classList.remove("open");
-            const menu = openDropdown.querySelector(":scope > .dropdown-menu");
-            if (menu) menu.style.height = "0px";
-        });
-    };
-
-    // زر إظهار/إخفاء القائمة بالكامل (الزر الموجود بجانب اللوجو)
-    document.querySelectorAll(".sidebar-toggler").forEach(button => {
-        button.addEventListener("click", (e) => {
-            e.stopPropagation();
-            closeAllDropdowns();
-            sidebar.classList.toggle("sidebar-collapsed");
-            
-            // مسح أي نافذة منبثقة معلقة من اللمس عند تكبير وتصغير القائمة
-            document.querySelectorAll('.nav-item.touch-hover').forEach(item => {
-                item.classList.remove('touch-hover');
-            });
-        });
-    });
-
-    // السحر الحقيقي لحل مشكلة اللمس والموبايل بدون تعارض وبدون تغيير الحجم
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', (e) => {
-            const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
-            const isDropdown = item.classList.contains('dropdown-container');
-            const clickedLink = e.target.closest('.nav-link');
-
-            // === الحالة الأولى: القائمة الجانبية مقفولة (شكل الأيقونات) ===
-            // هذا ما يحدث على الموبايل أو عند إغلاق القائمة في الكمبيوتر
-            if (isCollapsed) {
-                // نتأكد أن الضغطة كانت على الرابط الأساسي للخانة
-                if (clickedLink && clickedLink.parentElement === item) {
-                    
-                    if (isDropdown) e.preventDefault(); // نمنع تحديث الصفحة لو كانت قائمة منسدلة
-                    
-                    const isAlreadyActive = item.classList.contains('touch-hover');
-
-                    // نقفل أي خانة تانية كانت مفتوحة لبره
-                    document.querySelectorAll('.nav-item.touch-hover').forEach(other => {
-                        if (other !== item) other.classList.remove('touch-hover');
-                    });
-
-                    // نفتح الخانة التي ضغطنا عليها لبره (تأثير اللمس)
-                    if (!isAlreadyActive) {
-                        item.classList.add('touch-hover');
-                    }
-                }
-                
-                // مهم جداً: نوقف الحدث هنا لكي لا ينفذ أكواد الحالة الثانية ويفسد اللمس
-                e.stopPropagation();
-            } 
-            // === الحالة الثانية: القائمة الجانبية مفتوحة بالكامل ===
-            // هنا القوائم تفتح للأسفل (أكورديون)
-            else {
-                const isDropdownToggle = e.target.closest('.dropdown-toggle');
-                
-                if (isDropdown && isDropdownToggle) {
-                    e.preventDefault();
-                    e.stopPropagation(); // هنا وضعناه بأمان لأنه لن يؤثر على الموبايل
-
-                    const menu = item.querySelector(":scope > .dropdown-menu");
-                    const isOpen = item.classList.contains("open");
-
-                    closeAllDropdownsExcept(item);
-                    item.classList.toggle("open", !isOpen);
-                    updateMenuHeight(menu);
-                }
-            }
-        });
-    });
-
-    // إغلاق النوافذ المنبثقة للبره عند الضغط في أي مكان فاضي في الموقع
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.nav-item') && !e.target.closest('.sidebar-toggler')) {
-            document.querySelectorAll('.nav-item.touch-hover').forEach(item => {
-                item.classList.remove('touch-hover');
-            });
-        }
-    });
-
-    // ----------------------------------------------------
-    // اللغات والوضع الليلي
-    // ----------------------------------------------------
-    document.querySelectorAll(".lang-selector").forEach(langBtn => {
-        langBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const selectedLang = langBtn.getAttribute("data-lang");
-            
-            if (selectedLang === "ar") {
-                document.documentElement.setAttribute("dir", "rtl");
-                document.documentElement.setAttribute("lang", "ar");
-            } else {
-                document.documentElement.setAttribute("dir", "ltr");
-                document.documentElement.setAttribute("lang", selectedLang);
-            }
-
-            document.querySelectorAll("[data-i18n]").forEach(element => {
-                const key = element.getAttribute("data-i18n");
-                if (translations[selectedLang][key]) {
-                    element.textContent = translations[selectedLang][key];
-                }
-            });
-            
-            closeAllDropdowns();
-        });
-    });
-
-    const themeToggleBtn = document.getElementById("theme-toggle-btn");
-    const themeIcon = document.getElementById("theme-icon");
-    const themeText = document.getElementById("theme-text");
-
-    themeToggleBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        document.body.classList.toggle("dark-theme");
-        
-        const isDark = document.body.classList.contains("dark-theme");
-        const currentLang = document.documentElement.getAttribute("lang") || "ar";
-        
-        if (isDark) {
-            themeIcon.textContent = "light_mode";
-            themeText.textContent = translations[currentLang]["light_mode"];
-            themeText.setAttribute("data-i18n", "light_mode");
-        } else {
-            themeIcon.textContent = "dark_mode";
-            themeText.textContent = translations[currentLang]["dark_mode"];
-            themeText.setAttribute("data-i18n", "dark_mode");
-        }
-    });
-    const newsItems = document.querySelectorAll('.news-item');
-    const prevBtn = document.getElementById('prevPageBtn');
-    const nextBtn = document.getElementById('nextPageBtn');
-    const pageNumberDisplay = document.getElementById('pageNumberDisplay');
-    
-    const itemsPerPage = 4; // عدد الأخبار في كل صفحة (زي الصورة)
-    const totalPages = Math.ceil(newsItems.length / itemsPerPage);
-    let currentPage = 1;
-
-    function showPage(page) {
-        // حساب البداية والنهاية للأخبار المطلوبة
-        const startIndex = (page - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
-
-        // إخفاء كل الأخبار أولاً
-        newsItems.forEach(item => {
-            item.style.display = 'none';
-        });
-
-        // إظهار الأخبار الخاصة بالصفحة الحالية فقط
-        for(let i = startIndex; i < endIndex; i++) {
-            if(newsItems[i]) {
-                newsItems[i].style.display = 'flex';
-            }
-        }
-
-        pageNumberDisplay.textContent = page;
-    }
-
-    // أزرار التقليب
-    nextBtn.addEventListener('click', () => {
-        if (currentPage < totalPages) {
-            currentPage++;
-            showPage(currentPage);
-        }
-    });
-
-    prevBtn.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
-            showPage(currentPage);
-        }
-    });
-
-    // تشغيل الصفحة الأولى مبدئياً
-    showPage(1);
-
-});
-// =========================================================================
-// 4. برمجة صفحة المعهد التفاعلية (الانتقال، الأنيميشن، السكرول، والأزرار)
-// =========================================================================
-
-// الداتا الخاصة بالشعب (الاسم والأيقونة)
-const departmentsData = {
-    year1: [
-        { name: "عمارة", icon: "fa-building" },
-        { name: "شبكات وآلات كهربية", icon: "fa-network-wired" },
-        { name: "سيارات", icon: "fa-car" },
-        { name: "تشغيل وتشكيل", icon: "fa-cogs" },
-        { name: "تكنولوجيا معلومات", icon: "fa-laptop-code" },
-        { name: "مدني", icon: "fa-helmet-safety" },
-        { name: "تبريد وتكييف", icon: "fa-snowflake" },
-        { name: "أجهزة إلكترونية", icon: "fa-microchip" }
-    ],
-    year2: [
-        { name: "ديكور", icon: "fa-paint-roller" },
-        { name: "تكنولوجيا أشغال عامة", icon: "fa-road" },
-        { name: "تكنولوجيا عمارة", icon: "fa-city" },
-        { name: "جرافيك ووسائط متعددة", icon: "fa-photo-film" },
-        { name: "تشغيل معادن", icon: "fa-gear" },
-        { name: "تشكيل معادن", icon: "fa-hammer" },
-        { name: "تكنولوجيا البناء والتشييد", icon: "fa-trowel-bricks" },
-        { name: "تبريد وتكييف", icon: "fa-wind" },
-        { name: "شبكات قوى كهربية", icon: "fa-bolt" },
-        { name: "حسابات وشبكات", icon: "fa-server" },
-        { name: "أجهزة إلكترونية", icon: "fa-plug" },
-        { name: "الات كهربية", icon: "fa-motorcycle" }, // رمز تعبيري للآلات
-        { name: "الكترونيات سيارات", icon: "fa-car-battery" },
-        { name: "ميكانيكا سيارات", icon: "fa-wrench" }
-    ]
-};
-
-// عناصر الـ DOM
-const mainMatIndBtn = document.getElementById('mainMatIndBtn');
-const sidebarMatInd = document.getElementById('sidebarMatInd');
-const mainContent = document.querySelector('.main-content');
-const specialPage = document.getElementById('instituteSpecialPage');
-const movedButton = document.getElementById('movedButton');
-const aboutText = document.getElementById('aboutText');
-const typingBox = document.getElementById('typingBox');
-
-const termsSection = document.getElementById('termsSection');
-const deptsSection = document.getElementById('deptsSection');
-const deptsGrid = document.getElementById('deptsGrid');
-const waterBtns = document.querySelectorAll('.water-btn');
-
-let selectedYear = null;
-let selectedTerm = null; // ضفنا متغير الترم علشان نعرف نحدد المواد
-
-// =========================================================================
-// قاعدة بيانات المواد لكل شعبة (من الفرقة والترم)
-// =========================================================================
-const allSubjectsData = {
-    // ---- الفرقة الأولى - الترم الأول ----
-    "1_1_عمارة": ["تك ورش معمارية - الدرجة (150)", "مواد بناء - الدرجة (100)", "تك معلومات - الدرجة (150)", "رياضيات - الدرجة (150)", "لغة إنجليزية - الدرجة (50)", "رسم معماري - الدرجة (200)", "كتابة تقارير - الدرجة (100)"],
-    "1_1_شبكات وآلات كهربية": ["رياضيات - الدرجة (150)", "لغة إنجليزية - الدرجة (50)", "تك ورش ميكانيكية - الدرجة (100)", "هندسة كهربية - الدرجة (150)", "تك ورش كهربية - الدرجة (100)", "تك معلومات - الدرجة (150)", "فيزياء - الدرجة (200)"],
-    "1_1_سيارات": ["رسم فني - الدرجة (100)", "سلامة مهنية - الدرجة (50)", "هيدروليكا - الدرجة (150)", "رياضيات - الدرجة (150)", "لغة إنجليزية - الدرجة (50)", "مقدمة في تك سيارات - الدرجة (200)", "تك ورش سيارات - الدرجة (100)"],
-    "1_1_تشغيل وتشكيل": ["تك ورش ميكانيكية - الدرجة (150)", "تك معلومات - الدرجة (150)", "رياضيات - الدرجة (150)", "مواد هندسية - الدرجة (150)", "تك ورش تشكيل - الدرجة (200)", "رسم فني - الدرجة (100)"],
-    "1_1_تكنولوجيا معلومات": ["رياضيات - الدرجة (150)", "لغة إنجليزية - الدرجة (50)", "تك ورش شبكات - الدرجة (50)", "سلامة مهنية - الدرجة (50)", "أساسيات شبكات - الدرجة (150)", "تك معلومات - الدرجة (150)", "فيزياء - الدرجة (200)", "رسم فني - الدرجة (100)"],
-    "1_1_مدني": ["رياضيات - الدرجة (150)", "لغة إنجليزية - الدرجة (50)", "تك ورش أساسية - الدرجة (100)", "خواص واختبار المواد - الدرجة (150)", "سلامة مهنية وبيئية - الدرجة (100)", "تك معلومات - الدرجة (150)", "رسم إنشائي - الدرجة (200)"],
-    "1_1_تبريد وتكييف": ["رسم فني - الدرجة (100)", "أساسيات حراره - الدرجة (150)", "تكنولوجيا كهرباء - الدرجة (100)", "رياضيات - الدرجة (150)", "لغة إنجليزية - الدرجة (50)", "تك ورش ميكانيكية - الدرجة (150)", "فيزياء - الدرجة (200)"],
-    "1_1_أجهزة إلكترونية": ["رسم فني - الدرجة (100)", "رياضيات - الدرجة (150)", "لغة إنجليزية - الدرجة (50)", "تك ورش ميكانيكية - الدرجة (100)", "سلامة مهنية - الدرجة (50)", "تك ورش إلكترونية - الدرجة (100)", "تك معلومات - الدرجة (150)", "فيزياء - الدرجة (200)"],
-
-    // ---- الفرقة الأولى - الترم الثاني ----
-    "1_2_سيارات": ["محركات - الدرجة (150)", "فيزياء - الدرجة (200)", "رسم صناعي - الدرجة (100)", "كهرباء سيارات - الدرجة (100)", "تك معلومات - الدرجة (150)", "تك ورش سيارات - الدرجة (200)"],
-    "1_2_عمارة": ["تطبيقات حاسب - الدرجة (100)", "رسم تخصصي بالحاسب - الدرجة (150)", "تك ورش معمارية - الدرجة (150)", "رسم إنشائي مباني - الدرجة (150)", "لغة إنجليزية - الدرجة (50)", "مساحة عامة - الدرجة (150)", "قانون وتشريعات - الدرجة (150)"],
-    "1_2_تشغيل وتشكيل": ["رسم صناعي - الدرجة (100)", "فيزياء - الدرجة (200)", "تقارير فنية - الدرجة (100)", "تك ورش تشغيل - الدرجة (200)", "لغة إنجليزية - الدرجة (50)", "سلامة - الدرجة (50)", "معاملات حرارية - الدرجة (200)"],
-    "1_2_شبكات وآلات كهربية": ["آلات كهربية - الدرجة (200)", "تك ورش كهربية - الدرجة (100)", "تك مواد كهربية - الدرجة (100)", "رسم فني - الدرجة (100)", "لغة إنجليزية - الدرجة (50)", "تك إلكترونيات - الدرجة (150)", "دوائر منطق - الدرجة (150)", "سلامة مهنية - الدرجة (50)"],
-    "1_2_أجهزة إلكترونية": ["هندسة كهربية - الدرجة (150)", "برامج تطبيقية - الدرجة (150)", "تك ورش إلكترونية - الدرجة (100)", "قياسات - الدرجة (150)", "لغة إنجليزية - الدرجة (50)", "تك إلكترونيات - الدرجة (150)", "دوائر منطق - الدرجة (150)"],
-    "1_2_تكنولوجيا معلومات": ["هندسة كهربية - الدرجة (150)", "ربط شبكات - الدرجة (200)", "تحليل نظم - الدرجة (100)", "برمجة بلغة C++ - الدرجة (100)", "لغة إنجليزية - الدرجة (50)", "تك إلكترونيات - الدرجة (150)", "دوائر منطق - الدرجة (150)"],
-    "1_2_تبريد وتكييف": ["أساسيات تبريد - الدرجة (200)", "رسم صناعي - الدرجة (100)", "أجهزة قياس - الدرجة (150)", "تحكم آلي - الدرجة (150)", "تك معلومات - الدرجة (150)", "سلامة مهنية - الدرجة (50)", "منظومات موائع - الدرجة (100)"],
-    "1_2_مدني": ["تطبيقات حاسب - الدرجة (100)", "رسم إنشائي بالحاسب - الدرجة (150)", "مساحة مستوية - الدرجة (150)", "علاقات مهنية - الدرجة (100)", "لغة إنجليزية - الدرجة (50)", "تك تشييد - الدرجة (200)", "تحليل وإنشاءات - الدرجة (150)"],
-
-    // ---- الفرقة الثانية - الترم الأول ----
-    "2_1_ديكور": ["تنسيق مواقع (داخلية وخارجية) - الدرجة (100)", "دراسات بصرية - الدرجة (50)", "تكنولوجيا الديكور والتشطيبات - الدرجة (150)", "مواصفات فنية وحساب كميات - الدرجة (100)", "منظور داخلي ومجسمات - الدرجة (200)", "مبادئ رسومات تنفيذية - الدرجة (150)", "تك ورش معمارية متقدمة - الدرجة (100)"],
-    "2_1_تكنولوجيا أشغال عامة": ["مبادئ تصميم وتنفيذ الطرق - الدرجة (150)", "أعمال الري والصرف - الدرجة (100)", "تنفيذ الأعمال المساحية - الدرجة (200)", "تكنولوجيا الأعمال المدنية - الدرجة (150)", "مبادئ تصميم وتنفيذ أعمال شبكات الهندسة الصحية - الدرجة (100)", "إعداد الرسومات التنفيذية (أشغال) - الدرجة (150)", "مبادئ الهيدروليكا - الدرجة (50)"],
-    "2_1_تكنولوجيا عمارة": ["تنسيق مواقع (داخلية وخارجية) - الدرجة (100)", "تحليل إنشاءات ومبادئ خرسانة مسلحة - الدرجة (200)", "منظور معماري ومجسمات - الدرجة (150)", "مواصفات فنية وحساب كميات - الدرجة (100)", "تكنولوجيا العمارة وأساليب تنفيذ - الدرجة (150)", "مبادئ رسومات تنفيذية - الدرجة (150)", "تك ورش معمارية متقدمة - الدرجة (50)"],
-    "2_1_جرافيك ووسائط متعددة": ["نظم التشغيل - الدرجة (100)", "قواعد البيانات Access - الدرجة (150)", "البرمجة المرئية - الدرجة (200)", "تصميم مواقع الإنترنت - الدرجة (150)", "كتابة تقارير فنية - الدرجة (50)", "مبادئ الجرافيك - الدرجة (100)", "برمجيات الإنترنت PHP - الدرجة (150)"],
-    "2_1_تشغيل معادن": ["ضبط جودة إنتاج - الدرجة (100)", "تكنولوجيا قياس - الدرجة (100)", "لغة إنجليزية فنية (ميكانيكا) - الدرجة (50)", "مثبتات ومرشدات - الدرجة (150)", "تكنولوجيا تشغيل معادن - الدرجة (200)", "رسم هندسي بالحاسب - الدرجة (150)"],
-    "2_1_تشكيل معادن": ["ضبط جودة الإنتاج - الدرجة (100)", "تكنولوجيا قياسات - الدرجة (100)", "لغة إنجليزية فنية (ميكانيكا) - الدرجة (50)", "اسطمبات التشكيل - الدرجة (150)", "تكنولوجيا تشكيل معادن - الدرجة (200)", "رسم هندسي بالحاسب - الدرجة (150)"],
-    "2_1_تكنولوجيا البناء والتشييد": ["مبادئ تصميم وتنفيذ الخرسانة المسلحة - الدرجة (200)", "إدارة للمشروعات - الدرجة (100)", "مبادئ ميكانيكا التربة والأساسات - الدرجة (150)", "إعداد الرسومات التنفيذية (تشييد) - الدرجة (150)", "مبادئ تصميم وتنفيذ المنشآت المعدنية - الدرجة (150)", "إنشاء معماري - الدرجة (100)", "تكنولوجيا الإنشاءات - الدرجة (150)"],
-    "2_1_تبريد وتكييف": ["ضبط جودة الإنتاج - الدرجة (100)", "أنظمة تكييف الهواء - الدرجة (150)", "لغة إنجليزية فنية (ميكانيكا) - الدرجة (50)", "التحكم في معدات التبريد - الدرجة (150)", "مبادئ تكنولوجيا التبريد - الدرجة (200)", "آلات كهربية تخصصية - الدرجة (100)", "رسم فني تخصصي - الدرجة (150)"],
-    "2_1_شبكات قوى كهربية": ["شبكات قوى كهربية - الدرجة (200)", "إلكترونيات القوى الكهربية - الدرجة (150)", "ضبط جودة إنتاج - الدرجة (100)", "المعالجات والمتحكمات الدقيقة - الدرجة (150)", "أنظمة توليد القوى الكهربية - الدرجة (150)", "تحكم آلي - الدرجة (100)", "تك ورش الشبكات - الدرجة (50)"],
-    "2_1_حسابات وشبكات": ["بنية وتصميم الشبكات - الدرجة (150)", "قواعد البيانات (Access) - الدرجة (100)", "البرمجة المرئية - الدرجة (200)", "المعالجات والمتحكمات الدقيقة - الدرجة (150)", "كتابة تقارير فنية - الدرجة (50)", "مكونات وترقية وصيانة الحاسبات - الدرجة (150)", "نظم تشغيل الجهاز الخادم - الدرجة (100)"],
-    "2_1_أجهزة إلكترونية": ["إلكترونيات رقمية - الدرجة (150)", "إلكترونيات القوى الكهربية - الدرجة (150)", "أساسيات شبكات الحاسب - الدرجة (100)", "المعالجات والمتحكمات الدقيقة - الدرجة (200)", "دوائر إلكترونية - الدرجة (150)", "مكونات وترقية وصيانة الحاسبات - الدرجة (100)", "تك ورش إلكترونية متقدمة - الدرجة (50)"],
-    "2_1_الات كهربية": ["شبكات قوى كهربية - الدرجة (150)", "إلكترونيات القوى الكهربية - الدرجة (150)", "ضبط جودة الإنتاج - الدرجة (100)", "المعالجات والمتحكمات الدقيقة - الدرجة (200)", "آلات كهربية متقدمة - الدرجة (150)", "تحكم آلي - الدرجة (100)", "تك ورش آلات - الدرجة (50)"],
-    "2_1_الكترونيات سيارات": ["منظومات نقل الحركة - الدرجة (150)", "قياسات وتحكم - الدرجة (100)", "لغة إنجليزية فنية (سيارات) - الدرجة (50)", "محركات احتراق داخلي ونظم تشغيل - الدرجة (200)", "الدوائر الكهربية والإلكترونية بالمركبات - الدرجة (150)", "منظومات التعليق والتوجيه والفرامل - الدرجة (150)"],
-    "2_1_ميكانيكا سيارات": ["منظومات نقل الحركة - الدرجة (150)", "منظومات وقود البنزين والحد من التلوث - الدرجة (200)", "لغة إنجليزية فنية (سيارات) - الدرجة (50)", "كهرباء سيارات - الدرجة (100)", "نظم إدارة المرور - الدرجة (100)", "منظومات التعليق والتوجيه والفرامل - الدرجة (150)"],
-
-    // ---- الفرقة الثانية - الترم الثاني ----
-    "2_2_ديكور": ["رسومات تنفيذية - الدرجة (150)", "إدارة مشروعات وتعاقدات - الدرجة (100)", "تجهيزات وتركيبات فنية - الدرجة (200)", "ظل وإظهار معماري - الدرجة (150)", "تاريخ العمارة والتذوق الفني - الدرجة (100)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)", "سلامة مهنية وبيئية - الدرجة (100)"],
-    "2_2_تكنولوجيا أشغال عامة": ["حساب كميات وتحليل أسعار أشغال - الدرجة (150)", "رسومات تشغيلية أشغال - الدرجة (200)", "صيانة شبكات الطرق ومبادئ النقل والمرور - الدرجة (100)", "تكنولوجيا الأعمال المدنية المتقدمة - الدرجة (150)", "كتابة التقارير الفنية - الدرجة (50)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)", "أساليب التنفيذ ومعدات التشييد - الدرجة (100)", "التفتيش الفني وضبط الجودة أشغال - الدرجة (100)"],
-    "2_2_تكنولوجيا عمارة": ["رسومات تنفيذية - الدرجة (150)", "إدارة المشروعات وتعاقدات - الدرجة (100)", "تجهيزات وتركيبات فنية - الدرجة (200)", "ظل وإظهار معماري - الدرجة (150)", "تاريخ عمارة وأسس تصميم - الدرجة (100)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)", "سلامة مهنية وبيئية - الدرجة (100)"],
-    "2_2_جرافيك ووسائط متعددة": ["برمجة الإنترنت بدقة Asp Net - الدرجة (150)", "البرمجة بلغة الجافا - الدرجة (200)", "برنامج معالجة الصور (فوتوشوب) - الدرجة (150)", "برمجة تطبيقات الويب - الدرجة (100)", "برنامج فلاش Flash - الدرجة (100)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)"],
-    "2_2_تشغيل معادن": ["ماكينات التشغيل الحديثة C.N.C - الدرجة (200)", "علاقات عمل ومهارات اتصال - الدرجة (50)", "صيانة ماكينات التشغيل - الدرجة (150)", "التشغيل الغير تقليدي - الدرجة (100)", "تنظيم صناعي - الدرجة (100)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)"],
-    "2_2_تشكيل معادن": ["تصنيع اللدائن - الدرجة (150)", "علاقات عمل ومهارات اتصال - الدرجة (50)", "صيانة ماكينات التشكيل - الدرجة (150)", "تكنولوجيا أفران وماكينات اللحام - الدرجة (200)", "تنظيم صناعي - الدرجة (100)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)"],
-    "2_2_تكنولوجيا البناء والتشييد": ["حساب كميات وتحليل أسعار تشييد - الدرجة (150)", "رسومات تشغيلية تشييد - الدرجة (150)", "تكنولوجيا الأعمال التكميلية - الدرجة (100)", "صيانة وإعادة تأهيل المنشآت - الدرجة (100)", "كتابة التقارير الفنية - الدرجة (50)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)", "أساليب التنفيذ ومعدات التشييد - الدرجة (150)", "التفتيش الفني وضبط الجودة تشييد - الدرجة (100)"],
-    "2_2_تبريد وتكييف": ["التحكم في معدات تكييف الهواء - الدرجة (150)", "تطبيقات تكييف الهواء - الدرجة (150)", "مقايسة صيانة وإصلاح معدات التكييف والتبريد - الدرجة (100)", "التحكم المنطقي المبرمج في منظومات التبريد وتكييف الهواء - الدرجة (200)", "كتابة التقارير الفنية - الدرجة (50)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)", "تطبيقات تكنولوجيا التبريد - الدرجة (100)"],
-    "2_2_شبكات قوى كهربية": ["محطات التوزيع الكهربي - الدرجة (150)", "وقاية شبكات قوى كهربية - الدرجة (150)", "صيانة شبكات قوى كهربية - الدرجة (100)", "المتحكمات المبرمجة PLC - الدرجة (200)", "كتابة التقارير الفنية - الدرجة (50)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)", "برامج تطبيقية تخصصية (شبكات) - الدرجة (100)"],
-    "2_2_حسابات وشبكات": ["الشبكات المتسعة WAN - الدرجة (150)", "تطبيقات مكتبية وإنترنت - الدرجة (100)", "معامل تطبيقية - الدرجة (200)", "نظم تشغيل الشبكات - الدرجة (150)", "قواعد البيانات المتقدمة - الدرجة (150)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)"],
-    "2_2_أجهزة إلكترونية": ["دوائر إلكترونية متقدمة - الدرجة (200)", "معامل تطبيقية - الدرجة (150)", "صيانة وإصلاح الأجهزة الإلكترونية - الدرجة (150)", "المتحكمات المبرمجة PLC - الدرجة (100)", "كتابة التقارير الفنية - الدرجة (50)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)", "أجهزة اتصالات إلكترونية - الدرجة (100)"],
-    "2_2_الات كهربية": ["محطات توليد القوى الكهربية وأجهزة الوقاية - الدرجة (200)", "آلات الجر الكهربي - الدرجة (100)", "صيانة الآلات الكهربية - الدرجة (150)", "المتحكمات المبرمجة PLC - الدرجة (100)", "كتابة التقارير الفنية - الدرجة (50)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)", "برامج تطبيقية تخصصية (آلات) - الدرجة (100)"],
-    "2_2_الكترونيات سيارات": ["منظومات كهربية وإلكترونية وتحكم - الدرجة (200)", "علاقات عمل ومهارات اتصال - الدرجة (50)", "صيانة وتشخيص أعطال المركبات - الدرجة (150)", "تخطيط وإدارة مراكز الصيانة - الدرجة (100)", "كتابة التقارير الفنية - الدرجة (50)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)", "النظم الإلكترونية المدمجة - الدرجة (150)"],
-    "2_2_ميكانيكا سيارات": ["منظومات وقود الديزل - الدرجة (200)", "علاقات عمل ومهارات اتصال - الدرجة (50)", "صيانة وتشخيص أعطال المركبات - الدرجة (150)", "تخطيط وإدارة مراكز الصيانة - الدرجة (100)", "كتابة التقارير الفنية - الدرجة (50)", "مشروع وثقافة العمل الحر (كاب) - الدرجة (50)", "ناقل الحركة الأوتوماتيكي - الدرجة (150)"]
-};
-
-
-// 1. دالة تفعيل انتقال الصفحة
-function triggerInstitutePage(e) {
-    e.preventDefault();
-    
-    // جلب اسم المعهد ديناميكياً من الزرار الذي تم الضغط عليه
-    let instituteName = "المعهد الفني";
-    if(this.querySelector('span')) {
-        instituteName = this.querySelector('span').innerText.replace(/\n/g, ' ');
-    } else if (this.innerText) {
-        instituteName = this.innerText;
-    }
-
-    mainContent.classList.add('fade-out-main');
-    specialPage.classList.add('active-page');
-    setTimeout(() => { movedButton.classList.add('fly-top-right'); }, 100);
-    prepareTypingText();
-
-    // ---- الكود الجديد الخاص بإضافة المعهد للمسارات ----
-    currentPath = [
-        { id: 'home', title: 'الصفحة الرئيسية' },
-        { id: 'sections', title: 'الأقسام' },
-        { id: 'institute', title: instituteName }
-    ];
-    renderBreadcrumbs();
-}
-if(mainMatIndBtn) mainMatIndBtn.addEventListener('click', triggerInstitutePage);
-if(sidebarMatInd) sidebarMatInd.addEventListener('click', triggerInstitutePage);
-
-
-function prepareTypingText() {
-    // 1. جلب النص وتنظيفه من المسافات المكررة
-    const rawText = aboutText.textContent;
-    const cleanText = rawText.replace(/\s+/g, ' ').trim(); 
-    
-    aboutText.innerHTML = '';
-    const spans = [];
-    
-    // 2. التعديل الجوهري: قسمنا النص لـ (كلمات) بدل (حروف) لضمان اتصال الحروف
-    const words = cleanText.split(' ');
-    
-    words.forEach((word, index) => {
-        let span = document.createElement('span');
-        // هنا نضع الكلمة ككتلة واحدة في الـ span لضمان اتصال الحروف
-        span.textContent = word;
-        
-        // إضافة مسافة بعد كل كلمة إلا الكلمة الأخيرة
-        if (index < words.length - 1) {
-            span.textContent += ' '; 
-        }
-
-        aboutText.appendChild(span);
-        spans.push(span);
-    });
-
-    setTimeout(() => {
-        let currentIndex = 0;
-        
-        // 3. رجعنا السرعة لـ 150 ملي ثانية لتكون سرعة كلمة بكلمة طبيعية ومريحة للعين
-        const typingInterval = setInterval(() => {
-            if(currentIndex < spans.length) {
-                spans[currentIndex].classList.add('revealed');
-                currentIndex++;
-            } else {
-                clearInterval(typingInterval); // بيوقف لما يخلص كل الكلمات
-            }
-        }, 150); 
-    }, 1000);
+/* إعدادات عامة */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', sans-serif;
 }
 
-// التعديل 3: تم حذف كود (specialPage.addEventListener('scroll')) نهائياً
-// لضمان عدم اختفاء وظهور النص مرة أخرى عند النزول والصعود بالبكرة.
-
-// برمجة اختفاء السطور (سطر سطر) من فوق لتحت عند النزول بالبكرة
-
-
-// 3. برمجة أزرار الفرقة والترم (تأثير الماس)
-const subjectsSection = document.getElementById('subjectsSection'); // جلبنا الجدول
-
-waterBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-        const type = this.getAttribute('data-type');
-        const val = this.getAttribute('data-val');
-
-        const siblings = this.parentElement.querySelectorAll('.water-btn');
-        siblings.forEach(sib => sib.classList.remove('active-water'));
-        this.classList.add('active-water');
-
-        if (type === 'year') {
-            selectedYear = val;
-            
-            // -- كود المسار الجديد (إضافة الفرقة) --
-            const instIndex = currentPath.findIndex(p => p.id === 'institute');
-            if(instIndex !== -1) currentPath = currentPath.slice(0, instIndex + 1);
-            currentPath.push({ id: 'year', title: this.innerText });
-            renderBreadcrumbs();
-            // ------------------------------------
-
-            termsSection.classList.add('show-block');
-            deptsSection.classList.remove('show-block');
-            subjectsSection.classList.remove('show-block');
-            document.querySelectorAll('[data-type="term"]').forEach(t => t.classList.remove('active-water'));
-        } 
-        else if (type === 'term') {
-            selectedTerm = val;
-            
-            // -- كود المسار الجديد (إضافة الترم) --
-            const yearIndex = currentPath.findIndex(p => p.id === 'year');
-            if(yearIndex !== -1) currentPath = currentPath.slice(0, yearIndex + 1);
-            currentPath.push({ id: 'term', title: this.innerText });
-            renderBreadcrumbs();
-            // ------------------------------------
-
-            subjectsSection.classList.remove('show-block');
-            deptsSection.classList.add('show-block');
-            buildDepartments(selectedYear);
-        }
-    });
-});
-
-// 4. بناء أزرار الشعب وتأثير انتقال الأيقونة وبناء الجدول
-function buildDepartments(year) {
-    deptsGrid.innerHTML = ''; 
-    let targetData = year === '1' ? departmentsData.year1 : departmentsData.year2;
-
-    targetData.forEach((dept, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'dept-btn';
-        btn.style.animation = `fadeInNews 0.5s ease forwards ${index * 0.05}s`;
-        btn.style.opacity = '0';
-        
-        btn.innerHTML = `
-            <span>${dept.name}</span>
-            <i class="fa-solid ${dept.icon}"></i>
-        `;
-
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.dept-btn').forEach(b => {
-                if(b !== this) b.classList.remove('selected-dept');
-            });
-            this.classList.toggle('selected-dept');
-
-            if(this.classList.contains('selected-dept')) {
-                // -- كود المسار الجديد (إضافة اسم الشعبة) --
-                const termIndex = currentPath.findIndex(p => p.id === 'term');
-                if(termIndex !== -1) currentPath = currentPath.slice(0, termIndex + 1);
-                currentPath.push({ id: 'dept', title: dept.name });
-                renderBreadcrumbs();
-                // ------------------------------------------
-                
-                showSubjectsTable(selectedYear, selectedTerm, dept.name);
-            } else {
-                subjectsSection.classList.remove('show-block');
-            }
-        });
-
-        deptsGrid.appendChild(btn);
-    });
-}
-
-// 5. دالة سحرية لإنشاء جدول المواد بناءً على الفرقة والترم والشعبة
-// 5. دالة سحرية لإنشاء جدول المواد بناءً على الفرقة والترم والشعبة (معدلة بـ 4 خانات)
-function showSubjectsTable(year, term, deptName) {
-    const subjectsTitle = document.getElementById('subjectsTitle');
-    const subjectsTbody = document.getElementById('subjectsTbody');
-
-    // 1. تغيير عنوان الزرار اللامع لاسم الشعبة
-    subjectsTitle.innerHTML = `شعبة ${deptName}`;
-
-    // 2. البحث عن المواد في قاعدة البيانات الخاصة بنا
-    const dataKey = `${year}_${term}_${deptName}`;
-    let subjectsList = allSubjectsData[dataKey];
-
-    // تصفير الجدول
-    subjectsTbody.innerHTML = '';
-
-    if (!subjectsList || subjectsList.length === 0) {
-        // لو مفيش مواد متسجلة للشعبة دي (دمجنا الـ 4 خانات)
-        subjectsTbody.innerHTML = `<tr><td colspan="4"><div class="td-content" style="color:#e74c3c; font-weight:bold;">عفواً، لم يتم إدراج مواد لهذه الشعبة بعد.</div></td></tr>`;
-    } else {
-        // لو فيه مواد، هنرصها صف صف
-        subjectsList.forEach(subjectString => {
-            // كود سحري لفصل المادة عن الدرجة وحذف الكلمات الزيادة
-            let parts = subjectString.split('-');
-            let subjectName = parts[0] ? parts[0].trim() : subjectString;
-            let gradeOnly = parts[1] ? parts[1].replace('الدرجة', '').replace('(', '').replace(')', '').trim() : 'غير محدد';
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td><div class="td-content">${subjectName}</div></td>
-                <td><div class="td-content">${gradeOnly}</div></td>
-                <td><div class="td-content">لم يتم التحديد</div></td>
-                <td><div class="td-content">لم يتم تحديد CV <i class="fa-solid fa-file-pdf pdf-icon"></i></div></td>
-            `;
-            subjectsTbody.appendChild(tr);
-        });
-    }
-
-    // 3. إظهار الجدول بحركة ناعمة
-    subjectsSection.classList.add('show-block');
-    
-    // 4. النزول بالبكرة أوتوماتيك علشان الطالب يشوف الجدول
-    setTimeout(() => {
-        subjectsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 200);
-}
-
-// =========================================================================
-// 5. نظام مسارات التنقل (Breadcrumbs) وزر الرجوع للرئيسية
-// =========================================================================
-
-const breadcrumbContainer = document.getElementById('breadcrumbContainer');
-
-// المصفوفة التي تحفظ المكان الحالي
-let currentPath = [
-    { id: 'home', title: 'الصفحة الرئيسية' }
-];
-
-// دالة لرسم المسارات في الـ HTML
-function renderBreadcrumbs() {
-    breadcrumbContainer.innerHTML = ''; 
-    
-    currentPath.forEach((step, index) => {
-        const item = document.createElement('div');
-        item.className = 'breadcrumb-item';
-        item.dataset.id = step.id;
-        item.textContent = step.title;
-        
-        // لو ضغطنا على المسار
-        item.addEventListener('click', () => handleBreadcrumbClick(step.id, index));
-        breadcrumbContainer.appendChild(item);
-
-        // إضافة علامة السهم (>) بين الخانات، ما عدا آخر خانة
-        if (index < currentPath.length - 1) {
-            const separator = document.createElement('span');
-            separator.className = 'breadcrumb-separator';
-            separator.textContent = '>'; // علامة السهم التي طلبتها
-            breadcrumbContainer.appendChild(separator);
-        }
-    });
-}
-
-// إظهار المسار الأساسي "الصفحة الرئيسية" بعد انتهاء أنيميشن فتح الموقع (عند الثانية 2.5)
-setTimeout(() => {
-    breadcrumbContainer.classList.add('visible');
-    renderBreadcrumbs();
-}, 2500);
-
-// ================= دالة الرجوع للصفحة الرئيسية بأنيميشن البلع =================
-function returnToHome() {
-    const specialPage = document.getElementById('instituteSpecialPage');
-    const registrationFormPage = document.getElementById('registrationFormPage');
-    const mainContent = document.querySelector('.main-content');
-    const movedBtn = document.getElementById('movedButton');
-    // (ضيف السطور دي جوة دالة returnToHome())
-    const paymentSpecialPage = document.getElementById('paymentSpecialPage');
-    if(paymentSpecialPage) {
-        paymentSpecialPage.classList.remove('active-page');
-        document.getElementById('paymentMainTitle').style.display = 'block';
-        document.getElementById('paymentMainTitle').style.opacity = '1';
-        
-        document.querySelectorAll('.pay-inst-btn').forEach(btn => {
-            btn.classList.remove('hidden-inst', 'selected-pay-inst');
-        });
-        
-        document.getElementById('paymentYearSection').classList.remove('show-block');
-        document.getElementById('paymentFormSection').classList.remove('show-block');
-        document.querySelectorAll('.pay-year-btn').forEach(b => b.classList.remove('active-water'));
-        
-        document.getElementById('fawryResultBox').style.display = 'none';
-        const pForm = document.getElementById('paymentStudentForm');
-        if(pForm) pForm.reset();
-    }
-    // إخفاء صفحة المعهد الخاصة
-    if(specialPage) {
-        specialPage.classList.remove('active-page');
-        specialPage.style.display = ''; // العودة للوضع الافتراضي
-    }
-
-    // إخفاء صفحة الاستمارة (التعديل المطلوب لضمان عدم تداخل الصفحات)
-    if(registrationFormPage) {
-        registrationFormPage.classList.remove('active-page');
-        registrationFormPage.style.display = 'none';
-    }
-
-    // إظهار المحتوى الرئيسي مجدداً
-    if(mainContent) {
-        mainContent.classList.remove('fade-out-main');
-        mainContent.style.display = 'flex'; // إرجاع الواجهة الرئيسية للعمل
-    }
-
-    if(movedBtn) movedBtn.classList.remove('fly-top-right');
-
-    // مسح نص البحث عند العودة للرئيسية
-    const siteSearchInput = document.getElementById('siteSearchInput');
-    if(siteSearchInput) siteSearchInput.value = '';
-
-    // تصفير كل التحديدات داخل صفحة المعهد
-    const termsSection = document.getElementById('termsSection');
-    const deptsSection = document.getElementById('deptsSection');
-    const subjectsSection = document.getElementById('subjectsSection');
-    
-    if(termsSection) termsSection.classList.remove('show-block');
-    if(deptsSection) deptsSection.classList.remove('show-block');
-    if(subjectsSection) subjectsSection.classList.remove('show-block');
-    
-    document.querySelectorAll('.water-btn').forEach(btn => btn.classList.remove('active-water'));
-    document.querySelectorAll('.dept-btn').forEach(btn => btn.classList.remove('selected-dept'));
-    
-    selectedYear = null;
-    selectedTerm = null;
-
-    // تشغيل أنيميشن "البلع" باتجاه اليمين للمسارات الفرعية فقط
-    const items = document.getElementById('breadcrumbContainer').querySelectorAll('.breadcrumb-item, .breadcrumb-separator');
-    items.forEach((el, index) => {
-        if (index > 0) {
-            el.classList.add('swallowed'); 
-        }
-    });
-
-    // تحديث مصفوفة المسارات بعد انتهاء تأثير الأنيميشن
-    setTimeout(() => {
-        currentPath = [{ id: 'home', title: 'الصفحة الرئيسية' }];
-        renderBreadcrumbs();
-    }, 400);
-}
-// دالة التحكم عند الضغط على أي مسار من فوق
-function handleBreadcrumbClick(id, index) {
-    if (id === 'home') {
-        returnToHome();
-    } else {
-        // لو ضغط على مسار في المنتصف، نقص المصفوفة لحد المسار ده
-        const itemsToRemove = currentPath.length - 1 - index;
-        if(itemsToRemove > 0) {
-            currentPath = currentPath.slice(0, index + 1);
-            renderBreadcrumbs();
-            
-            // نخفي الأقسام بناءً على رجوعنا لفين
-            if (id === 'institute') {
-                document.getElementById('termsSection').classList.remove('show-block');
-                document.getElementById('deptsSection').classList.remove('show-block');
-                document.getElementById('subjectsSection').classList.remove('show-block');
-                document.querySelectorAll('.water-btn').forEach(btn => btn.classList.remove('active-water'));
-            } else if (id === 'year') {
-                 document.getElementById('deptsSection').classList.remove('show-block');
-                 document.getElementById('subjectsSection').classList.remove('show-block');
-                 // مسح تحديد الترم
-                 document.querySelectorAll('[data-type="term"]').forEach(t => t.classList.remove('active-water'));
-            } else if (id === 'term') {
-                document.getElementById('subjectsSection').classList.remove('show-block');
-                document.querySelectorAll('.dept-btn').forEach(btn => btn.classList.remove('selected-dept'));
-            }
-        }
-    }
-}
-
-// 5. تفعيل زر القائمة الجانبية (الصفحة الرئيسية)
-const sidebarHomeBtn = document.getElementById('sidebarHomeBtn');
-if (sidebarHomeBtn) {
-    sidebarHomeBtn.addEventListener('click', (e) => {
-        e.preventDefault(); 
-        returnToHome(); // نفس دالة الرجوع
-        
-        // إغلاق القائمة الجانبية في الموبايل لو كانت مفتوحة
-        document.querySelector(".sidhedar").classList.add("sidebar-collapsed");
-    });
-}
-
-// =========================================================================
-// =========================================================================
-// 6. تشغيل نظام البحث الذكي (باقتراحات فورية)
-// =========================================================================
-const siteSearchInput = document.getElementById('siteSearchInput');
-const searchSuggestions = document.getElementById('searchSuggestions');
-const siteSearchBtn = document.getElementById('siteSearchBtn');
-
-// 1. تجميع الداتا الموجودة في الموقع عشان نبحث فيها (المعاهد، الشعب، المواد)
-let smartSearchData = [];
-
-// إضافة المعاهد يدوياً
-const instituteList = ["المعهد الفني الصناعي بالمطرية", "المعهد الفني التجاري بالمطرية", "المعهد الفني الصناعي بشبرا", "المعهد الفني التجاري بشبرا", "المعهد الفني للسياحة والفنادق بالمطرية", "المعهد الفني للري والصرف بالمطرية"];
-instituteList.forEach(inst => smartSearchData.push({ text: inst, type: "معهد" }));
-
-// إضافة الشعب (بنجيبها من المتغير departmentsData بتاعك)
-Object.values(departmentsData).forEach(year => {
-    year.forEach(dept => {
-        // نمنع التكرار لو الشعبة موجودة في سنة تانية
-        if (!smartSearchData.some(item => item.text === dept.name)) {
-            smartSearchData.push({ text: dept.name, type: "شعبة" });
-        }
-    });
-});
-
-// إضافة المواد (بنجيبها من المتغير allSubjectsData بتاعك)
-let addedSubjects = [];
-Object.values(allSubjectsData).forEach(subjectArray => {
-    subjectArray.forEach(subjectString => {
-        // بنفصل اسم المادة عن الدرجة زي ما أنت عامل في الكود
-        let subjectName = subjectString.split('-')[0].trim();
-        if (!addedSubjects.includes(subjectName)) {
-            addedSubjects.push(subjectName);
-            smartSearchData.push({ text: subjectName, type: "مادة" });
-        }
-    });
-});
-
-// 2. برمجة ظهور الاقتراحات بمجرد ما يكتب حرفين
-if (siteSearchInput && searchSuggestions) {
-    siteSearchInput.addEventListener('input', function() {
-        const query = this.value.trim().toLowerCase();
-        
-        // لو مسح الكلام أو كتب حرف واحد، نخفي القائمة
-        if (query.length < 2) {
-            searchSuggestions.style.display = 'none';
-            return;
-        }
-
-        // فلترة الداتا بناءً على اللي بيكتبه
-        const matchedResults = smartSearchData.filter(item => 
-            item.text.toLowerCase().includes(query)
-        );
-
-        // تفريغ القائمة القديمة
-        searchSuggestions.innerHTML = '';
-
-        if (matchedResults.length > 0) {
-            matchedResults.forEach(result => {
-                const div = document.createElement('div');
-                div.className = 'suggestion-item';
-                div.innerHTML = `<span class="suggestion-badge">${result.type}</span> ${result.text}`;
-                
-                // لما يدوس على الاقتراح
-                div.addEventListener('click', () => {
-                    siteSearchInput.value = result.text;
-                    searchSuggestions.style.display = 'none';
-                    executeSearch(result.text, result.type);
-                });
-
-                searchSuggestions.appendChild(div);
-            });
-            searchSuggestions.style.display = 'block';
-        } else {
-            searchSuggestions.innerHTML = `<div class="suggestion-item" style="color: #e74c3c; justify-content:center;">لا توجد نتائج مطابقة</div>`;
-            searchSuggestions.style.display = 'block';
-        }
-    });
-
-    // إخفاء القائمة لو ضغط بالماوس في أي مكان فاضي في الشاشة
-    document.addEventListener('click', function(e) {
-        if (e.target !== siteSearchInput && e.target !== searchSuggestions) {
-            searchSuggestions.style.display = 'none';
-        }
-    });
-}
-
-// 3. الدالة اللي بتنفذ الحدث لما نختار حاجة من البحث
-function executeSearch(keyword, type) {
-    if (type === "معهد" || type === "شعبة") {
-        // بيبحث عن الزرار اللي فيه اسم المعهد أو الشعبة ويعمل عليه إضاءة
-        const buttons = document.querySelectorAll('.cascade-item, .water-btn, .dept-btn');
-        let found = false;
-        buttons.forEach(btn => {
-            if (btn.innerText.toLowerCase().includes(keyword.toLowerCase())) {
-                btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                btn.style.animation = "glowingEffect 1.5s infinite alternate";
-                setTimeout(() => { btn.style.animation = ""; }, 4000);
-                found = true;
-            }
-        });
-        if(!found) {
-            alert("يرجى اختيار الفرقة والترم لتظهر أقسام/شعب هذا الاختيار.");
-        }
-    } 
-    else if (type === "مادة") {
-        // لو اختار مادة، بيشوف لو الجدول مفتوح يعمل تظليل عليها
-        const tableRows = document.querySelectorAll('.subjects-table tbody tr');
-        let foundSubject = false;
-        
-        tableRows.forEach(row => {
-            if (row.innerText.toLowerCase().includes(keyword.toLowerCase())) {
-                row.style.background = "rgba(241, 196, 15, 0.4)"; // أصفر قوي
-                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(() => { row.style.background = ""; }, 4000); // يختفي بعد 4 ثواني
-                foundSubject = true;
-            }
-        });
-
-        if (!foundSubject) {
-            alert(`المادة (${keyword}) صحيحة، لكن يجب فتح الشعبة الخاصة بها من جدول المعهد لتحديدها.`);
-        }
-    }
+body {
+    background-color: #f8f9fa;
+    color: #333;
+    overflow-x: hidden;
 }
 
 
 
-const scrollToTopBtn = document.getElementById('scrollToTopBtn');
-
-if (scrollToTopBtn) {
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
-            scrollToTopBtn.classList.add('show');
-        } else {
-            scrollToTopBtn.classList.remove('show');
-        }
-    });
-
-    scrollToTopBtn.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
+/* ================= المحتوى الرئيسي والأنيميشن ================= */
+.page-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
 }
 
-// =========================================================================
-// 7. برمجة شاشة الاستمارة الشاملة (مايكروسوفت + حفظ + طباعة 3 ورقات)
-// =========================================================================
-
-document.addEventListener('DOMContentLoaded', function() {
-    const openFormBtn = document.getElementById('openFormBtn');
-    const registrationFormPage = document.getElementById('registrationFormPage');
+.main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     
-    const microsoftLoginStep = document.getElementById('microsoftLoginStep');
-    const msLoginBtn = document.getElementById('msLoginBtn');
-    
-    const actualFormStep = document.getElementById('actualFormStep');
-    const studentRegistrationForm = document.getElementById('studentRegistrationForm');
-    const saveDataBtn = document.getElementById('saveDataBtn');
-    const printFormBtn = document.getElementById('printFormBtn');
-    const successMessage = document.getElementById('successMessage');
-    
- // فتح شاشة الاستمارة الإلكترونية المستقلة كصفحة جديدة تابعة للوزارة
-if(openFormBtn) {
-    openFormBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        // التحويل المباشر لملف الاستمارة المستقل
-        window.location.href = 'register.html';
-    });
 }
-    // 2. محاكاة تسجيل الدخول بمايكروسوفت
-    if(msLoginBtn) {
-        msLoginBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const originalText = msLoginBtn.innerHTML;
-            msLoginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق من Office 365...';
-            
-            // محاكاة تحميل لمدة ثانيتين (هنا مستقبلاً هيتحط كود الفايربيز الفعلي)
-            setTimeout(() => {
-                microsoftLoginStep.style.display = 'none';
-                actualFormStep.style.display = 'block';
-                msLoginBtn.innerHTML = originalText; // نرجع الزرار لأصله
-            }, 2000);
-        });
+
+/* ---- القسم العلوي (الخلفية) ---- */
+.hero-section {
+    background-color: #000; /* خلفية سوداء مبدئية قبل ظهور الصورة */
+    height: 450px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* طبقة الصورة الخلفية التي سيتم عمل أنيميشن لها */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    opacity: 0; /* مخفية مبدئياً */
+    filter: blur(20px);
+    transition: all 1.5s ease-in-out;
+}
+
+.hero-section.bg-loaded::before {
+    opacity: 0.4; /* التعتيم الخفيف لظهور الكلام */
+    filter: blur(0px);
+    transform: translateY(0);
+}
+
+.top-nav {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    right: 30px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+
+.top-link {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* ---- قسم العنوان والدائرة ---- */
+.hero-title-area {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    margin-top: -100px; 
+}
+
+.text-wrapper {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 1s ease-out;
+}
+
+.text-wrapper.text-loaded {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.main-title {
+    font-size: 50px; 
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    margin-bottom: 5px;
+}
+
+.sub-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 2px;
+    font-family: Arial, sans-serif;
+    text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+}
+
+/* ---- أنيميشن الدائرة (تأثير البوابة الزمنية والدائرة المقطوعة) ---- */
+/* ---- أنيميشن الدائرة (تأثير البوابة الزمنية مع ثبات ولمعان) ---- */
+/* ---- أنيميشن الدائرة (احتضان الكلمة وتغيير الألوان مثل Meta AI) ---- */
+/* ---- أنيميشن الدائرة (احتضان الكلمة وتغيير الألوان مثل Meta AI) ---- */
+/* ---- أنيميشن الدائرة (دائرة كاملة رفيعة متدرجة تدور كالصورة تماماً) ---- */
+/* ---- أنيميشن الدائرة (نفس شكل الصورة: منفصلة، سميكة، وحجمها مناسب) ---- */
+/* ---- أنيميشن الدائرة (قطر أكبر، سُمك أقل، وأقواس ممتدة بفتحة قصيرة) ---- */
+.full-ring-gradient {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0); 
+    
+    /* 1. تكبير القطر الكلي للدائرة:
+       كبرناه لـ 420px علشان تكون أوسع براحتها حوالين الكلمة 
+       (لو لسه شايفها صغيرة، خلي الرقمين 450px) */
+    width: 320px;  
+    height: 320px; 
+    border-radius: 50%; 
+    
+    /* 2. تصغير السُمك وتمديد القوس (خدعة الـ CSS):
+       - خلينا سُمك القوس الملون (فوق وتحت) 12px بدل 35px علشان يبقى أرفع.
+       - خلينا سُمك الفراغ الشفاف (يمين وشمال) 3px بس.
+       - اختلاف المقاسين ده هو اللي بيمدد القوس ويقلل مساحة القص جداً. */
+    border-top: 13px solid #a542cc;
+    border-bottom: 13px solid #4facfe;
+    border-left: 2.5px solid transparent;
+    border-right: 2.5px solid transparent;
+    
+    z-index: -1;
+    opacity: 0;
+}
+
+/* 3. تشغيل الحركات */
+.full-ring-gradient.spin-anim {
+    animation: portalEntrance 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards, 
+               colorShift 6s linear infinite 1.5s;
+}
+
+/* حركة الدخول السريعة */
+@keyframes portalEntrance {
+    0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1) rotate(1440deg); opacity: 1; }
+}
+
+/* 4. حركة الألوان الأصلية */
+@keyframes colorShift {
+    0%   { border-top-color: #a14cc4; border-bottom-color: #4facfe; } 
+    16%  { border-top-color: #ff0844; border-bottom-color: #a14cc4; } 
+    33%  { border-top-color: #f1c40f; border-bottom-color: #ff0844; } 
+    50%  { border-top-color: #2ecc71; border-bottom-color: #f1c40f; } 
+    66%  { border-top-color: #00f2fe; border-bottom-color: #2ecc71; } 
+    83%  { border-top-color: #4facfe; border-bottom-color: #00f2fe; } 
+    100% { border-top-color: #a14cc4; border-bottom-color: #4facfe; } 
+}
+/* ---- العناصر المتتالية (الأزرار والأخبار) ---- */
+.cascade-item {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.cascade-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ---- قسم الأزرار الستة ---- */
+.six-buttons-section {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: -60px; 
+    z-index: 20;
+    padding: 0 20px;
+}
+
+.colorful-btn {
+    width: 140px;
+    height: 130px;
+    border-radius: 15px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: 0.3s;
+    border: 2px solid rgba(255,255,255,0.3);
+}
+
+.colorful-btn:hover {
+    transform: translateY(-10px);
+}
+
+.colorful-btn i { font-size: 28px; margin-bottom: 10px; }
+.colorful-btn span { font-size: 12px; font-weight: 700; line-height: 1.4; }
+
+.blue-btn   { background: linear-gradient(135deg, #4ea3d8, #2980b9); }
+.orange-btn { background: linear-gradient(135deg, #f39c12, #d35400); }
+.green-btn  { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+.purple-btn { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+.yellow-btn { background: linear-gradient(135deg, #f1c40f, #f39c12); color: #fff; }
+.red-btn    { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+
+/* ---- قسم الأخبار ---- */
+.news-section {
+    padding: 50px 30px;
+}
+
+.news-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-direction: row-reverse;
+}
+
+.news-header h2 { font-size: 24px; font-weight: 900; color: #2c3e50; }
+
+.pagination {
+    font-size: 20px;
+    color: #7f8c8d;
+    direction: ltr;
+    user-select: none;
+}
+
+.nav-arrow {
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: 0.3s;
+    font-weight: bold;
+}
+.nav-arrow:hover { color: #8e2de2; transform: scale(1.2); display: inline-block; }
+
+.news-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.news-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    /* حركة ناعمة عند التقليب بين الأخبار */
+    animation: fadeInNews 0.5s ease-in-out; 
+}
+
+@keyframes fadeInNews {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.news-card img { width: 100%; height: 140px; object-fit: cover; }
+.news-info { padding: 15px; text-align: center; }
+.news-info h4 { font-size: 14px; font-weight: 700; color: #333; margin-bottom: 10px; line-height: 1.5; }
+.news-tag { font-size: 12px; color: #7f8c8d; }
+
+.blue-news-card .blue-card-content {
+    background-color: #1a3b5c;
+    color: #fff;
+    height: 140px;
+    padding: 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.blue-card-content h3 { font-size: 18px; color: #f1c40f; margin-bottom: 5px; }
+.blue-card-content p { font-size: 12px; }
+
+/* ---- الفوتر ---- */
+.main-footer {
+    background-color: #1b2a3a;
+    color: #fff;
+    padding: 40px 30px 20px;
+    margin-top: auto;
+}
+
+.footer-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    text-align: right;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 30px;
+    margin-bottom: 20px;
+}
+
+.footer-col h4 { font-size: 18px; color: #fff; margin-bottom: 15px; }
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 8px; }
+.footer-col ul li a { color: #bdc3c7; text-decoration: none; font-size: 14px; transition: 0.3s; }
+.footer-col ul li a:hover { color: #4facfe; }
+
+.footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+.footer-bottom p { font-size: 12px; color: #bdc3c7; }
+.social-icons i { font-size: 16px; color: #bdc3c7; margin-right: 15px; cursor: pointer; transition: 0.3s; }
+.social-icons i:hover { color: #fff; }
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Cairo:wght@400;600;700&display=swap');
+
+:root {
+    --body-bg-start: #F1F3FF;
+    --body-bg-end: #CBD4FF;
+    --text-color: #151A2E;
+    --sidebar-bg: #151A2E;
+    --sidebar-hover-bg: #EEF2FF;
+    --sidebar-hover-text: #151A2E;
+    --sidebar-text: #ffffff;
+}
+
+body.dark-theme {
+    --body-bg-start: #0F1322;
+    --body-bg-end: #1E2538;
+    --text-color: #F1F3FF;
+    --sidebar-bg: #090D1A;
+    --sidebar-hover-bg: #222B45;
+    --sidebar-hover-text: #FFD700;
+    --sidebar-text: #E4E7F5;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Cairo", "Poppins", sans-serif; 
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(var(--body-bg-start), var(--body-bg-end));
+    background-attachment: fixed; /* السطر السحري لمنع قطع الخلفية */
+    color: var(--text-color);
+    transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* القائمة دائماً على الشمال */
+.sidhedar {
+    position: fixed;
+    top: 0;
+    left: 0 !important;
+    right: auto !important;
+    width: 400px;
+    height: 100vh;
+    background: var(--sidebar-bg);
+    transition: all 0.4s ease;
+    z-index: 10000; /* التعديل هنا: رفعنا الرقم جداً عشان يغطي على أي حاجة */
+}
+.sidhedar {
+    opacity: 0; /* نخفيها تماماً في البداية */
+    pointer-events: none;
+    transform: translateX(-50px);
+}
+.sidhedar.show-after-load {
+    opacity: 1; /* كلاس هيتم إضافته بعد الأنيميشن لإظهارها */
+    pointer-events: auto;
+    transform: translateX(0);
+}
+
+.sidebar-collapsed {
+    width: 85px;
+}
+
+.sidhedar .sidebar-header {
+    display: flex;
+    align-items: center;
+    padding: 25px 15px;
+    justify-content: flex-start;
+    position: relative;
+}
+
+/* تعديل اللوجو ليبقى يساراً والنص بالمنتصف */
+.sidebar-header .logo-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    direction: ltr; /* اللوجو على الشمال */
+}
+
+.sidebar-header .header-logo img {
+    height: 46px;
+    width: 46px;
+    display: block;
+    object-fit: contain;
+    border-radius: 50%;
+    flex-shrink: 0; /* منع تصغير اللوجو */
+}
+
+/* الكلمة في المنتصف المضيئة */
+.sidebar-header .logo-text {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+    white-space: nowrap;
+    background: linear-gradient(270deg, #FFD700, #FFA500, #FFF7C2, #FFD700);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: liquid-glow 4s ease infinite;
+    filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+    margin-right: 32px; /* لموازنة المساحة مع السهم الأيمن */
+    transition: opacity 0.3s ease;
+}
+
+@keyframes liquid-glow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.sidebar-collapsed .logo-text {
+    display: none;
+}
+
+.sidebar-header .sidebar-toggler {
+    position: absolute;
+    right: 15px;
+    height: 32px;
+    width: 32px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #EEF2FF;
+    transition: 0.4s ease;
+    z-index: 10000; /* التعديل هنا: إجبار الزر على البقاء في الطبقة العليا */
+}
+
+.sidebar-header .sidebar-toggler:hover {
+    background: #d9e1fd;
+}
+
+.sidebar-collapsed .sidebar-toggler {
+    left: 50%;
+    transform: translateX(-50%) translateY(70px);
+}
+
+.sidebar-header .sidebar-toggler span {
+    font-size: 1.5rem;
+    transition: 0.4s ease;
+    color: #151A2E;
+}
+
+.sidebar-collapsed .sidebar-toggler span {
+    transform: rotate(180deg);
+}
+
+.sidebar-nav .nav-list {
+    list-style: none;
+    display: flex;
+    gap: 4px;
+    padding: 0 15px;
+    flex-direction: column;
+    transform: translateY(15px);
+    transition: 0.4s ease;
+}
+
+.sidebar-nav .primary-nav {
+    overflow-y: auto;
+    height: calc(100vh - 250px);
+    padding-bottom: 30px;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+.sidebar-nav .primary-nav:hover {
+    scrollbar-color: #EEF2FF transparent;
+}
+
+.sidebar-collapsed .sidebar-nav .primary-nav {
+    overflow-y: unset;
+    transform: translateY(65px);
+}
+
+.sidebar-nav .nav-list li .nav-link {
+    color: var(--sidebar-text);
+    display: flex;
+    gap: 12px;
+    white-space: nowrap;
+    padding: 11px 15px;
+    align-items: center;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: 0.3s ease;
+    direction: ltr;
+}
+
+.sidebar-nav .nav-list li .nav-link .nav-label {
+    direction: rtl;
+    text-align: right;
+    width: 100%;
+}
+
+html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
+    direction: ltr;
+    text-align: left;
+}
+
+.sidebar-nav .nav-list li:hover > .nav-link,
+.sidebar-nav .nav-list li.touch-hover > .nav-link {
+    color: var(--sidebar-hover-text);
+    background: var(--sidebar-hover-bg);
+}
+
+
+.nav-list > .nav-item > .nav-link .nav-label,
+.nav-list > .nav-item > .nav-link .dropdown-icon {
+    opacity: 1;
+    white-space: nowrap; /* يمنع الكلام ينزل سطر جديد */
+    transition: opacity 0.3s ease 0.2s; /* تأخير 0.2 ثانية عند الفتح */
+}
+
+.sidebar-collapsed .nav-list > .nav-item > .nav-link .nav-label,
+.sidebar-collapsed .nav-list > .nav-item > .nav-link .dropdown-icon {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    transition: opacity 0.1s ease; /* اختفاء سريع */
+    pointer-events: none; /* إلغاء تفعيل الماوس وهي مخفية */
+}
+
+
+.sidebar-nav .secindary-nav {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    background: var(--sidebar-bg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 10px;
+}
+
+.sidebar-nav .nav-item {
+    position: relative;
+}
+
+.sidebar-nav .dropdown-icon {
+    margin-left: auto;
+    margin-right: 0;
+    transition: transform 0.4s ease;
+}
+
+.sidebar-nav .dropdown-container.open > .nav-link .dropdown-icon {
+    transform: rotate(180deg);
+}
+
+/* الكود الأساسي المسئول عن إخفاء الخانات المنسدلة داخل القائمة المفتوحة */
+.sidebar-nav .dropdown-menu {
+    height: 0;
+    overflow: hidden;
+    list-style: none;
+    padding-left: 15px;
+    transition: height 0.6s ease;
+}
+
+/* =========================================================
+   2. حل مشكلة اختفاء القائمة المنبثقة عند تحريك الماوس (وهي مقفولة)
+   ========================================================= */
+
+/* ده "الكوبري المخفي" اللي بيمنع الماوس يقع في الفراغ بين الأيقونة والكلام */
+.sidebar-collapsed .nav-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 85px;
+    width: 30px;
+    height: 100%;
+    z-index: 1000;
+}
+
+/* إظهار الخانة الأساسية لما تحط الماوس (بإجبار الظهور وحل مشكلة pointer-events) */
+.sidebar-collapsed .nav-item:hover > .nav-link .nav-label,
+.sidebar-collapsed .nav-item.touch-hover > .nav-link .nav-label {
+    display: block !important;
+    opacity: 1 !important;
+    position: absolute;
+    left: 85px;
+    top: 0;
+    background: var(--sidebar-bg);
+    width: 315px; /* العرض الجديد (400 للقائمة ناقص 85) */
+    padding: 12px 20px;
+    z-index: 1001;
+    font-weight: 700;
+    pointer-events: auto !important; /* مهم جدااااً عشان الماوس يفضل ماسك فيها */
+}
+
+/* تظبيط شكل الخانة اللي مفيهاش سهم */
+.sidebar-collapsed .nav-item:not(.dropdown-container):hover > .nav-link .nav-label,
+.sidebar-collapsed .nav-item:not(.dropdown-container).touch-hover > .nav-link .nav-label {
+    border-radius: 0 8px 8px 0;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+    color: var(--sidebar-text);
+}
+
+/* تظبيط شكل الخانة اللي جواها سهم */
+.sidebar-collapsed .dropdown-container:hover > .nav-link .nav-label,
+.sidebar-collapsed .dropdown-container.touch-hover > .nav-link .nav-label {
+    color: #FFD700;
+    border-radius: 0 8px 0 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 5px -2px 10px rgba(0,0,0,0.15);
+}
+
+/* =========================================================
+   3. إعدادات القوائم المنسدلة (الخانات الداخلية) لما تكون القائمة مقفولة
+   ========================================================= */
+
+.sidebar-collapsed .dropdown-menu {
+    position: absolute;
+    left: 85px;
+    top: 48px; /* تظهر تحت اسم الخانة بالضبط بدون فراغات */
+    height: auto !important; /* إجبار إنها تفضل مفتوحة برا */
+    overflow: visible !important;
+    background: var(--sidebar-bg);
+    width: 315px; /* نفس عرض الخانة اللي فوقها */
+    padding: 10px;
+    border-radius: 0 0 8px 0;
+    box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+    
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: none !important; /* إلغاء أي أنيميشن بيعمل وميض عند القفل */
+}
+
+/* ربط ظهور القائمة الداخلية بحركة الماوس على الخانة الأب */
+.sidebar-collapsed .nav-item:hover > .dropdown-menu,
+.sidebar-collapsed .nav-item.touch-hover > .dropdown-menu {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto !important; /* تفعيل الماوس جواها */
+}
+
+/* حل مشكلة القوائم السفلية (عشان متقطعش من الشاشة من تحت) */
+.sidebar-collapsed .secindary-nav .dropdown-menu {
+    top: auto;
+    bottom: 0; /* تفتح لفوق بدلاً من الأسفل */
+    border-radius: 0 8px 0 0;
+}
+.sidebar-collapsed .secindary-nav .nav-item:hover > .nav-link .nav-label,
+.sidebar-collapsed .secindary-nav .nav-item.touch-hover > .nav-link .nav-label {
+    top: auto;
+    bottom: 0;
+    border-radius: 0 8px 0 0;
+}
+
+.sidebar-menu-button {
+    display: none;
+}
+
+/* ====================================================================
+   تعديلات الموبايل واللمس 
+   ==================================================================== */
+@media (max-width: 768px) {
+    .sidhedar {
+        width: 100%; /* تملى الشاشة كلها لما تفتح */
+    }
+    .sidebar-collapsed {
+        width: 75px; /* شريط أيقونات رفيع يفضل ثابت على الموبايل */
+    }
+    .sidebar-collapsed .nav-item:hover > .nav-link .nav-label,
+    .sidebar-collapsed .nav-item.touch-hover > .nav-link .nav-label,
+    .sidebar-collapsed .dropdown-menu {
+        width: calc(100vw - 75px); /* تكبير عرض الخانات الجانبية لتملأ باقي الموبايل */
+    }
+}
+
+/* تنسيق ذكي لإزاحة محتوى الموقع لتجنب تداخله مع القائمة الجانبية الثابتة في اليسار */
+.page-layout {
+    padding-left: 400px;
+    transition: padding-left 0.4s ease;
+}
+
+/* عندما تنكمش القائمة الجانبية، يتم تقليص الإزاحة تلقائياً لـ 85 بكسل */
+.sidhedar.sidebar-collapsed ~ .page-layout {
+    padding-left: 85px;
+}
+
+/* تعديلات الشاشات الصغيرة والموبايل */
+@media (max-width: 768px) {
+    .page-layout {
+        padding-left: 0;
+    }
+    .sidhedar.sidebar-collapsed ~ .page-layout {
+        padding-left: 75px;
+    }
+}
+
+/* ================== تأثيرات صفحة المعهد الجديدة ================== */
+
+/* إخفاء المحتوى الرئيسي ببطء */
+.main-content.fade-out-main {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.95);
+    transition: all 1s ease;
+}
+
+/* حاوية الصفحة الجديدة */
+.special-page-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 100vh;
+    padding-left: 400px; /* لترك مساحة للقائمة الجانبية */
+    z-index: 100;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 1s ease;
+   
+    padding-bottom: 50px;
+}
+@media (max-width: 768px) {
+    .special-page-container { padding-left: 75px; }
+}
+.special-page-container.active-page {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* الزرار اللي بيطير لفوق */
+/* الزرار اللي بيطير لفوق */
+.moved-state {
+    position: absolute !important; /* التعديل هنا علشان يتحرك لفوق ويختفي مع السكرول */
+    top: 50vh; /* التعديل هنا علشان يبدأ من نص الشاشة بالظبط */
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.5);
+    z-index: 101;
+    opacity: 0;
+    transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.moved-state.fly-top-right {
+    top: 140px !important; /* نزلنا الزرار لتحت بمسافة ممتازة */
+    left: auto !important;
+    right: 40px !important;
+    transform: translate(0, 0) scale(0.9);
+    opacity: 1;
+}
+
+/* محتوى الصفحة الجديدة */
+/* محتوى الصفحة الجديدة */
+/* محتوى الصفحة الجديدة */
+.special-page-content {
+    margin-top: 340px; /* مسافة كبيرة تضمن إن المحتوى ينزل تحت الزرار تماماً في الكمبيوتر والموبايل */
+    padding: 0 40px;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 1s ease 0.5s; 
+}
+.special-page-container.active-page .special-page-content {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.magic-title {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    border-right: 5px solid #4facfe;
+    padding-right: 15px;
+}
+.section-block { margin-bottom: 50px; }
+.hidden-block { display: none; opacity: 0; transform: translateY(20px); transition: 0.5s; }
+.hidden-block.show-block { display: block; opacity: 1; transform: translateY(0); }
+
+/* --- تأثير الكتابة مع السكرول --- */
+/* --- تأثير الكتابة مع السكرول --- */
+
+/* 1. تأثير الإضاءة الماسية (اللون البنفسجي) للصندوق من الخارج */
+.typing-container {
+    background: var(--sidebar-bg); 
+    color: #ffffff !important; 
+    padding: 40px; /* قللنا المسافة شوية عشان الإطار الداخلي يظهر بشياكة */
+    border-radius: 15px; 
+    font-size: 20px; 
+    line-height: 2.2; 
+    min-height: 400px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    position: relative;
+    /* السر هنا: إطار بنفسجي ماسي مع توهج شديد لبره وجوه */
+    border: 3px solid #8e2de2; 
+    box-shadow: 0 0 25px rgba(142, 45, 226, 0.7), inset 0 0 20px rgba(142, 45, 226, 0.5);
+}
+
+/* 2. الإطار الأزرق المضيء حول الكلام نفسه (الجديد) */
+.scroll-typing-text {
+    border: 2px solid #00f2fe; /* إطار أزرق لامع حول الكلام */
+    box-shadow: 0 0 20px rgba(0, 242, 254, 0.5), inset 0 0 10px rgba(0, 242, 254, 0.2);
+    padding: 30px; /* مسافة داخلية بين الكلام والإطار الأزرق */
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.25); /* خلفية غامقة خفيفة ورا الكلام عشان النور يبان قوي */
+}
+
+/* 3. إعدادات الحروف قبل ما تظهر */
+.scroll-typing-text span {
+    opacity: 0; /* الكلام مخفي تماماً في البداية */
+    transition: opacity 0.1s ease, text-shadow 0.1s ease, transform 0.4s ease;
+    display: inline-block; /* ضروري عشان نقدر نتحرك بالحرف لفوق */
+}
+
+/* 4. إعدادات الحروف والنور الجامد جداً لما تتكتب */
+.scroll-typing-text span.revealed {
+    opacity: 1; 
+    color: #ffffff;
+    /* توهج أزرق شديد ولمعان قوي جداً للحروف */
+    text-shadow: 0 0 10px #ffffff, 0 0 20px #00f2fe, 0 0 30px #4facfe, 0 0 40px #4facfe; 
+    transform: translateY(0);
+}
+
+/* 5. السحر: اختفاء السطور لفوق سطر سطر عند النزول بالماوس */
+/* إعدادات الكلمات قبل ما تظهر */
+/* إعدادات الكلمات قبل ما تظهر */
+/* إعدادات الحروف قبل ما تظهر */
+.scroll-typing-text span {
+    opacity: 0; 
+    transition: opacity 0.3s ease, text-shadow 0.3s ease, transform 0.4s ease;
+    display: inline-block; 
+    transform: translateY(10px); 
+    will-change: opacity, transform, text-shadow; /* هذا السطر يمنع التقطيع */
+}
+
+/* إعدادات الحروف والنور الجامد جداً لما تتكتب */
+.scroll-typing-text span.revealed {
+    opacity: 1; 
+    color: #ffffff;
+    text-shadow: 0 0 10px #ffffff, 0 0 20px #00f2fe, 0 0 30px #4facfe, 0 0 40px #4facfe; 
+    transform: translateY(0); 
+}
+/* --- أزرار الكريستال/الماس الجديدة (بديلة للمياه) --- */
+.water-buttons-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.water-btn {
+    position: relative;
+    padding: 15px 40px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    background: var(--sidebar-bg);
+    border: 2px solid rgba(142, 45, 226, 0.3); /* لون موف خفيف */
+    border-radius: 12px;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.water-btn:hover {
+    transform: translateY(-5px);
+    border-color: #8e2de2;
+    box-shadow: 0 10px 25px rgba(142, 45, 226, 0.2);
+}
+
+.water-btn:active {
+    transform: scale(0.95);
+}
+
+/* لمعة الماس السريعة عند تمرير الماوس */
+.water-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: skewX(-25deg);
+    z-index: -1;
+    transition: left 0.6s ease;
+}
+.water-btn:hover::before {
+    left: 150%;
+}
+
+/* حالة الضغط والنشاط (كريستال منور) */
+.water-btn.active-water {
+    background: linear-gradient(135deg, #8e2de2, #4a00e0);
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 20px rgba(142, 45, 226, 0.6), inset 0 2px 10px rgba(255,255,255,0.4);
+    transform: translateY(-3px) scale(1.02);
+}
+
+/* تأثير النبض الكريستالي الجذاب */
+.water-btn.active-water::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 10px;
+    box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.5);
+    animation: crystalGlow 1.5s infinite alternate ease-in-out;
+    z-index: -1;
+}
+
+@keyframes crystalGlow {
+    0% { opacity: 0.4; transform: scale(0.98); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* --- أزرار الشعب --- */
+.depts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+}
+.dept-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-color);
+    background: var(--body-bg-start);
+    border: 2px solid var(--sidebar-hover-bg);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* حركة مرنة للأيقونة */
+}
+.dept-btn:hover {
+    background: var(--sidebar-hover-bg);
+    transform: translateY(-5px);
+}
+.dept-btn i {
+    font-size: 22px;
+    color: #8e2de2;
+    transition: all 0.4s ease;
+}
+/* عند الضغط على الشعبة */
+.dept-btn.selected-dept {
+    background: #2ecc71; /* لون أخضر */
+    color: #fff;
+    border-color: #27ae60;
+    flex-direction: row-reverse; /* السحر هنا: بيعكس مكان الأيقونة والكلام */
+}
+.dept-btn.selected-dept i {
+    color: #fff;
+    transform: rotate(360deg) scale(1.2); /* الأيقونة بتلف وتكبر سنة */
+}
+
+/* ================== تأثيرات جدول المواد الدراسية ================== */
+
+/* عنوان الشعبة اللامع زي الزرار */
+.glowing-dept-title {
+    display: block;
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #00f2fe, #4facfe);
+    border-radius: 50px;
+    color: #fff;
+    font-weight: 900;
+    font-size: 22px;
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.6);
+    animation: crystalGlow 1.5s infinite alternate;
+    margin-bottom: 30px;
+    text-align: center;
+    width: 100%;
+}
+
+/* حاوية الجدول (لعمل الكيرفات) */
+.subjects-table-container {
+    border-radius: 20px;
+    overflow: hidden; /* عشان يقص أطراف الجدول ويعمل الكيرف */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    background: var(--sidebar-bg);
+    border: 2px solid rgba(79, 172, 254, 0.3);
+}
+
+.subjects-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+/* صف العناوين اللامع */
+.subjects-table th {
+    background: #0f1322;
+    color: #fff;
+    padding: 20px;
+    font-size: 18px;
+    text-shadow: 0 0 10px #4facfe;
+    border-bottom: 2px solid #4facfe;
+}
+
+/* مسافة فوق الجدول علشان ما يلزقش في الشعب */
+/* مسافة فوق الجدول علشان ما يلزقش في الشعب، مع إزاحته لليسار */
+#subjectsSection {
+    margin-top: 80px; 
+    margin-bottom: 50px;
+    position: relative;
+    transform: translateX(-40px); /* هذا السطر هو المسؤول عن سحب القسم بالكامل لليسار */
+}
+/* الخلايا العادية (خليناها ثابتة علشان الجدول ما يتهزش) */
+.subjects-table td {
+    background: #1e2538;
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 0; /* شيلنا الحواف من هنا وهنحطها جوا */
+    position: relative;
+    z-index: 1;
+}
+/* رفع الخلية بالكامل فوق كل الخلايا التانية عند التحديد */
+.subjects-table td:hover {
+    z-index: 100;
+}
+
+/* المحتوى الداخلي للخلية (هو اللي هيكبر ويتحرك) */
+/* المحتوى الداخلي للخلية (هو اللي هيكبر ويتحرك) */
+.td-content {
+    padding: 15px;
+    font-size: 16px;
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: default;
+    position: relative;
+    font-weight: 900; /* تمت الإضافة هنا لتثبيت حجم الكلمة ومنع الاهتزاز */
+}
+
+.pdf-icon {
+    margin-right: 8px;
+    font-size: 18px;
+}
+
+/* ---------------------------------------------------- */
+/* تأثيرات الماوس على الخلايا (Pop-out & Colors) من غير هزة للجدول */
+/* ---------------------------------------------------- */
+
+/* الخلية الأولى (المواد) -> أصفر */
+/* الخلية الأولى (المواد) -> أصفر */
+.subjects-table td:nth-child(1) .td-content:hover {
+    background: #f1c40f; color: #000;
+    transform: scale(1.15); z-index: 10;
+    box-shadow: 0 10px 25px rgba(241, 196, 15, 0.5); border-radius: 10px; 
+}
+
+/* الخلية الثانية (الدرجة) -> أزرق سماوي لامع */
+.subjects-table td:nth-child(2) .td-content:hover {
+    background: #00f2fe; color: #000;
+    transform: scale(1.15); z-index: 10;
+    box-shadow: 0 10px 25px rgba(0, 242, 254, 0.5); border-radius: 10px; 
+}
+
+/* الخلية الثالثة (المهندسين) -> أخضر */
+.subjects-table td:nth-child(3) .td-content:hover {
+    background: #2ecc71; color: #fff;
+    transform: scale(1.15); z-index: 10;
+    box-shadow: 0 10px 25px rgba(46, 204, 113, 0.5); border-radius: 10px; 
+}
+
+/* الخلية الرابعة (CV) -> أحمر */
+.subjects-table td:nth-child(4) .td-content:hover {
+    background: #e74c3c; color: #fff;
+    transform: scale(1.15); z-index: 10;
+    box-shadow: 0 10px 25px rgba(231, 76, 60, 0.5); border-radius: 10px; cursor: pointer;
+}
+
+.scroll-typing-text span {
+    margin-left: 6px; /* بتعمل مسافة إجبارية ناحية الشمال بين كل كلمة واللي بعدها */
+}
+
+/* ================= شريط المسارات (Breadcrumbs) ================= */
+/* ================= الحاوية العلوية المشتركة (البحث + المسارات) ================= */
+.top-navigation-bar {
+    display: flex;
+    justify-content: space-between; /* يضع المسارات في جهة والبحث في جهة بجانب بعضهما */
+    align-items: center;
+    padding: 15px 30px;
+    background: rgba(15, 20, 38, 0.9); /* خلفية داكنة متناسقة مع تصميمك */
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 999; /* لضمان ظهورها فوق كل المحتوى */
+    direction: rtl;
+}
+
+/* تحديث حاوية المسارات لتصبح مرنة وبدون أبسولوت */
+.breadcrumb-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0; 
+    transform: translateX(20px);
+    transition: all 0.6s ease-in-out;
+}
+
+/* عندما تصبح المسارات جاهزة للظهور */
+.breadcrumb-container.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.breadcrumb-item {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+    white-space: nowrap;
+}
+
+.breadcrumb-item:hover {
+    color: #FFD700; /* تغيير اللون للذهبي عند تمرير الماوس */
+    transform: scale(1.05);
+}
+
+/* السهم الفاصل الفخم > */
+.breadcrumb-separator {
+    color: #4facfe;
+    font-size: 14px;
+    font-weight: 900;
+    margin: 0 5px;
+    user-select: none;
+}
+
+/* تأثير البلع البرمجي للمسارات عند العودة للرئيسية */
+.breadcrumb-item.swallowed,
+.breadcrumb-separator.swallowed {
+    max-width: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+    transform: translateX(30px);
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* تنسيق شكل خانة البحث لتبدو احترافية بجانب المسارات */
+.search-wrapper {
+    position: relative; /* التعديل هنا: السطر ده مهم جداً عشان القائمة تفتح تحته بالظبط */
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 5px 15px;
+    min-width: 280px;
+    transition: all 0.3s ease;
+}
+.search-wrapper:focus-within {
+    border-color: #4facfe;
+    box-shadow: 0 0 10px rgba(79, 172, 254, 0.3);
+}
+
+.search-wrapper input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    width: 100%;
+}
+
+.search-action-btn {
+    background: transparent;
+    border: none;
+    color: #4facfe;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+}
+
+.search-action-btn:hover {
+    transform: scale(1.15);
+    color: #FFD700;
+}
+
+/* السهم الفاصل بين المسارات > */
+.breadcrumb-separator {
+    margin: 0 10px;
+    color: #4facfe;
+    font-size: 14px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 900;
+}
+
+/* ================= أنيميشن "البلع" عند الرجوع للرئيسية ================= */
+/* عندما نضغط على الرئيسية، سنعطي العناصر هذا الكلاس لتختفي كأنها تُسحب لليمين */
+.breadcrumb-item.swallowed,
+.breadcrumb-separator.swallowed {
+    max-width: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+    transform: translateX(40px); /* السحب لليمين في اتجاه زر الرئيسية */
+}
+
+/* ================= الشريط العلوي الثابت (بعد التعديل) ================= */
+/* ================= الشريط العلوي الثابت (معدل ليظهر بجوار القائمة) ================= */
+.fixed-top-bar {
+    position: fixed;
+    top: 0;
+    left: 400px; /* بيبدأ من بعد القائمة المفتوحة */
+    width: calc(100% - 400px); /* بياخد باقي الشاشة */
+    height: 70px; 
+    padding: 0 30px; 
+    background: rgba(15, 20, 38, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 9998; /* التعديل هنا: أقل من القائمة الجانبية عشان ميعرضش فوقها */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    direction: rtl;
+    
+    opacity: 0; 
+    pointer-events: none; 
+    transform: translateY(-20px); 
+    transition: left 0.4s ease, width 0.4s ease, opacity 0.8s ease, transform 0.8s ease;
+}
+
+/* لما القائمة الجانبية تصغر، الشريط يكبر ناحية الشمال عشان يملى الفراغ */
+.sidhedar.sidebar-collapsed ~ .fixed-top-bar {
+    left: 85px; /* يبدأ من بعد القائمة المقفولة */
+    width: calc(100% - 85px);
+}
+
+/* الكلاس ده الجافاسكريبت هيضيفه عشان يظهر الشريط بعد الانيميشن */
+.fixed-top-bar.show-bar {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* تنزيل زرار المعهد وكل محتويات الصفحة لتحت بزيادة عشان مفيش حاجة تتغطى */
+/* تنزيل زرار المعهد وكل محتويات الصفحة لتحت بمسافة متناسقة */
+.page-layout {
+    padding-top: 70px; /* تم تقليل الفراغ ليكون مناسب تحت الشريط */
+}
+.special-page-container {
+    padding-top: 70px; 
+}
+
+/* تظبيط الشريط للموبايل */
+/* تظبيط الشريط والمحتوى والخلفية للموبايل والشاشات الصغيرة */
+
+
+/* =========================================================
+   تعديلات الموبايل: عرض النبذة، الفوتر، وطول القائمة الجانبية
+   ========================================================= */
+@media (max-width: 768px) {
+    
+    /* 1. حل مشكلة ضيق خانة نبذة عن المعهد وجعلها عريضة */
+    .special-page-container {
+        padding-left: 75px !important; /* تقليل المسافة لتناسب شريط القائمة المصغر فقط */
+        padding-right: 15px !important;
+        width: 100% !important;
+    }
+    
+    .section-block, 
+    .typing-container, 
+    #typingBox {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 10px !important;
     }
 
-    // 3. الضغط على حفظ (توزيع البيانات على 3 ورقات)
-    if(studentRegistrationForm) {
-        studentRegistrationForm.addEventListener('submit', function(e) {
-            e.preventDefault(); 
-            
-            // تجميع البيانات
-            const name = document.getElementById('stuName').value;
-            const code = document.getElementById('stuCode').value;
-            const nationalId = document.getElementById('stuNationalId').value;
-            const address = document.getElementById('stuAddress').value;
-            const phone = document.getElementById('stuPhone').value;
-            const dept = document.getElementById('stuDept').value;
-            
-            // --- توزيع البيانات على الورقة الأولى ---
-            document.getElementById('p1-name').innerText = name;
-            document.getElementById('p1-code').innerText = code;
-            document.getElementById('p1-nationalId').innerText = nationalId;
-            document.getElementById('p1-address').innerText = address;
-            document.getElementById('p1-phone').innerText = phone;
-            document.getElementById('p1-dept').innerText = dept;
-
-            // --- توزيع البيانات على الورقة الثانية ---
-            document.getElementById('p2-name').innerText = name;
-            document.getElementById('p2-nationalId').innerText = nationalId;
-            document.getElementById('p2-dept').innerText = dept;
-
-            // --- توزيع البيانات على الورقة الثالثة ---
-            document.getElementById('p3-name').innerText = name;
-
-            // --- هنا كود الفايربيز لرفع البيانات (جاهز للتشغيل لاحقاً) ---
-           
-            firebase.database().ref('Student_Forms/' + nationalId).set({
-                Name: name, Code: code, NationalID: nationalId, Address: address, 
-                Phone: phone, Dept: dept, Timestamp: new Date().toLocaleString('ar-EG')
-            });
-            
-
-            // تغيير الواجهة (إظهار النجاح وزرار الطباعة)
-            saveDataBtn.style.display = 'none';
-            successMessage.classList.add('show-block');
-            printFormBtn.style.display = 'flex';
-            
-            // تمرير الشاشة للأسفل علشان الطالب يشوف زرار الطباعة
-            printFormBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        });
-
-        // 4. الضغط على زرار الطباعة
-        if(printFormBtn) {
-            printFormBtn.addEventListener('click', function() {
-                window.print();
-            });
-        }
+    /* 2. حل مشكلة المسافة الكبيرة ورفع الفوتر تحت الأخبار مباشرة */
+    .page-layout {
+        min-height: unset !important; /* إلغاء فرض طول الشاشة الكامل */
+        height: auto !important;
     }
-});
-
-// =========================================================================
-// 8. برمجة شاشة دفع المصاريف (حركات الأزرار، الفورم، وكود فوري الوهمي)
-// =========================================================================
-
-document.addEventListener('DOMContentLoaded', function() {
-    const payFeesBtn = document.getElementById('payFeesBtn');
-    const paymentSpecialPage = document.getElementById('paymentSpecialPage');
-    const paymentMainTitle = document.getElementById('paymentMainTitle');
-    const payInstBtns = document.querySelectorAll('.pay-inst-btn');
-    const paymentYearSection = document.getElementById('paymentYearSection');
-    const payYearBtns = document.querySelectorAll('.pay-year-btn');
-    const paymentFormSection = document.getElementById('paymentFormSection');
-    const paymentStudentForm = document.getElementById('paymentStudentForm');
-    const fawryResultBox = document.getElementById('fawryResultBox');
-
-    // 1. فتح شاشة الدفع من القائمة الجانبية
-    if(payFeesBtn) {
-        payFeesBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // إخفاء الصفحة الرئيسية
-            const mainContent = document.querySelector('.main-content');
-            if(mainContent) mainContent.classList.add('fade-out-main');
-            
-            // إغلاق كل الصفحات الخاصة الأخرى
-            document.querySelectorAll('.special-page-container').forEach(p => p.classList.remove('active-page'));
-            
-            // إظهار صفحة الدفع
-            paymentSpecialPage.classList.add('active-page');
-            
-            // ضبط المسار (Breadcrumbs)
-            currentPath = [
-                { id: 'home', title: 'الصفحة الرئيسية' },
-                { id: 'pay_fees', title: 'دفع مصاريف المعهد' }
-            ];
-            renderBreadcrumbs();
-            
-            // قفل القائمة ورفع الشاشة لفوق
-            document.querySelector(".sidhedar").classList.add("sidebar-collapsed");
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+    
+    .main-content {
+        justify-content: flex-start !important;
+    }
+    
+    .main-footer {
+        margin-top: 40px !important; /* وضع الفوتر تحت الأخبار بمسافة صغيرة */
     }
 
-   // 2. الضغط على زرار المعهد (إلغاء الاختفاء وتفعيل التبديل والنزول لليمين)
-payInstBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-        
-        // إخفاء العنوان الرئيسي بنعومة
-        paymentMainTitle.style.opacity = '0';
-        setTimeout(() => paymentMainTitle.style.display = 'none', 300);
-
-        // ========================================================
-        // التعديلات الجديدة: تصفير الفورم وإخفاؤه عند تغيير المعهد
-        // ========================================================
-        // 1. إخفاء الفورم بتاع الرقم القومي والاسم
-        paymentFormSection.classList.remove('show-block');
-        // 2. إخفاء كود فوري لو كان ظاهر
-        fawryResultBox.style.display = 'none';
-        // 3. مسح البيانات القديمة المكتوبة في الفورم
-        if (paymentStudentForm) paymentStudentForm.reset();
-        // 4. إزالة التحديد (اللون) من زراير الفرقة علشان يختار من جديد
-        payYearBtns.forEach(b => b.classList.remove('active-water'));
-        // ========================================================
-
-        // -- التعديل القديم الخاص بك كما هو --
-        // أولاً: نقوم بإزالة فئة التحديد من جميع المعاهد لضمان التبديل السليم
-        payInstBtns.forEach(otherBtn => {
-            otherBtn.classList.remove('selected-pay-inst');
-        });
-        
-        // ثانياً: نضيف فئة التحديد للمعهد الذي تم الضغط عليه فقط
-        this.classList.add('selected-pay-inst');
-        
-        // تحديث مسار التنقل من فوق (Breadcrumbs)
-        const instName = this.getAttribute('data-name');
-        const payIndex = currentPath.findIndex(p => p.id === 'pay_fees');
-        if(payIndex !== -1) currentPath = currentPath.slice(0, payIndex + 1);
-        currentPath.push({ id: 'pay_inst', title: instName });
-        renderBreadcrumbs();
-
-        // إظهار زراير الفرقة بعد نصف ثانية (ليتناسب مع حركة الزر)
-        setTimeout(() => {
-            paymentYearSection.classList.add('show-block');
-        }, 500);
-    });
-});
-    // 3. الضغط على الفرقة الأولى أو الثانية
-    payYearBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const yearName = this.innerText;
-            
-            // تظليل الزرار المختار
-            payYearBtns.forEach(sib => sib.classList.remove('active-water'));
-            this.classList.add('active-water');
-            
-            // تحديث مسار التنقل
-            const instIndex = currentPath.findIndex(p => p.id === 'pay_inst');
-            if(instIndex !== -1) currentPath = currentPath.slice(0, instIndex + 1);
-            currentPath.push({ id: 'pay_year', title: yearName });
-            renderBreadcrumbs();
-
-            // إظهار الفورم أسفل الزراير
-            paymentFormSection.classList.add('show-block');
-            setTimeout(() => {
-                paymentFormSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 300);
-        });
-    });
-
-    // 4. الضغط على التحقق لاستخراج كود فوري
-    if(paymentStudentForm) {
-        paymentStudentForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // منع تحديث الصفحة
-            
-            const submitBtn = this.querySelector('.submit-btn');
-            const originalHtml = submitBtn.innerHTML;
-            
-            // حركة التحميل
-            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق من السيستم واستخراج الكود...';
-            
-            // بعد ثانية ونص، إظهار نتيجة الكود الوهمي
-            setTimeout(() => {
-                submitBtn.innerHTML = originalHtml; // إرجاع شكل الزرار
-                fawryResultBox.style.display = 'block'; // إظهار كود فوري
-                
-                // النزول بالشاشة لرؤية الكود براحة
-                fawryResultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 1500);
-        });
+    /* 3. تظبيط طول القائمة الجانبية وإزالة المسافة السفلية الطويلة */
+    .sidhedar {
+        height: 100dvh !important; /* يضبط الطول مع شاشة الموبايل الحقيقية بدقة */
     }
-});
+    
+    .sidebar-nav .primary-nav {
+        height: calc(100dvh - 280px) !important; /* تقصير القائمة من الأسفل لتكون طبيعية */
+        padding-bottom: 20px !important;
+    }
+    
+    .sidebar-nav .secindary-nav {
+        bottom: 10px !important; /* رفع القائمة السفلية قليلاً لتظهر بوضوح */
+        padding-bottom: 15px !important;
+    }
+}
+
+/* =========================================================
+   زر العودة للأعلى (Scroll to Top)
+   ========================================================= */
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    left: 20px; /* حطناه على الشمال علشان القائمة الجانبية على اليمين */
+    background: linear-gradient(135deg, #1a365d, #0d1b2a); /* لون أزرق غامق شيك يتماشى مع الموقع */
+    color: white;
+    border: none;
+    border-radius: 50%; /* عشان يبقى مدور */
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 9999; /* عشان يفضل فوق كل حاجة في الصفحة */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    
+    /* تأثيرات الظهور والاختفاء */
+    opacity: 0;
+    pointer-events: none; /* عشان ميتداسش عليه وهو مخفي */
+    transform: translateY(20px);
+    transition: all 0.3s ease-in-out;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* الكلاس ده الجافاسكريبت هيضيفه لما ننزل لتحت عشان الزرار يظهر */
+.scroll-to-top.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* تأثير لما تقف عليه بالماوس (للكمبيوتر) */
+.scroll-to-top:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, #2a4a7f, #1a365d);
+}
+
+/* تظبيط حجمه في الموبايل عشان مياخدش مساحة كبيرة */
+@media (max-width: 768px) {
+    .scroll-to-top {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        bottom: 15px;
+        left: 15px;
+    }
+}
+
+/* =======================================================
+   1. إصلاح الفوتر في الكمبيوتر (تثبيته دائماً في الأسفل)
+======================================================= */
+.page-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-content {
+    display: flex !important;
+    flex-direction: column !important;
+    flex-grow: 1 !important;
+    min-height: 100vh !important;
+}
+
+.main-footer {
+    margin-top: auto !important;
+    width: 100%;
+    position: relative;
+    z-index: 50;
+}
+
+/* =======================================================
+   2. التعديل الجذري والنهائي للموبايل (يتوافق مع شاشة 980 بيكسل)
+======================================================= */
+@media screen and (max-width: 980px) {
+    
+    /* 1. إصلاح طول الشاشة ومنع الفراغ السفلي */
+    body, html {
+        height: auto !important;
+        min-height: 100vh !important;
+        overflow-x: hidden !important;
+    }
+    .page-layout {
+        padding-left: 85px !important; 
+        min-height: 100vh !important;
+    }
+
+    /* 2. القائمة الجانبية (إظهار الخانات السفلية) */
+    .sidhedar {
+        height: 100dvh !important; 
+        width: 400px !important; 
+        max-width: 100vw !important; 
+        z-index: 10000 !important; 
+        overflow: visible !important; 
+    }
+    .sidhedar.sidebar-collapsed { width: 85px !important; }
+    
+    .sidebar-nav {
+        height: calc(100% - 80px) !important; 
+        position: relative !important;
+        overflow: visible !important;
+    }
+    .sidebar-nav .primary-nav {
+        max-height: calc(100dvh - 250px) !important; 
+        overflow-y: auto !important;
+        overflow-x: visible !important; 
+        pointer-events: auto !important; 
+        padding-bottom: 20px !important;
+    }
+    .sidebar-collapsed .sidebar-nav .primary-nav {
+        overflow: visible !important; 
+        overflow-y: visible !important;
+        max-height: none !important; 
+    }
+    .sidebar-nav .secindary-nav {
+        position: absolute !important;
+        bottom: 0 !important; 
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        z-index: 10005 !important; 
+        background-color: var(--sidebar-bg) !important;
+        padding-bottom: 20px !important; 
+        border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .sidebar-collapsed .nav-item { position: relative !important; }
+    .sidebar-collapsed .nav-item.touch-hover > .nav-link .nav-label,
+    .sidebar-collapsed .nav-item.touch-hover > .dropdown-menu {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        position: absolute !important;
+        left: 85px !important; 
+        z-index: 10001 !important; 
+        background: var(--sidebar-bg) !important;
+        width: 315px !important; 
+        max-width: calc(100vw - 85px) !important; 
+    }
+
+    /* 3. إصلاح النبذة (علشان تفرد بالعرض تماماً وتبطل تتزنق) */
+    .special-page-content {
+        padding: 0 10px !important; /* الكود السحري اللي بيلغي الضغط الجانبي في الموبايل */
+    }
+    .section-block {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 15px 0 !important;
+    }
+    .typing-container {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 20px 15px !important; 
+        margin: 0 !important;
+        border-radius: 8px !important; 
+        box-sizing: border-box !important;
+    }
+    .scroll-typing-text {
+        display: block !important;
+        font-size: 16px !important; 
+        line-height: 1.8 !important;
+        text-align: right !important; 
+        white-space: normal !important; /* بيفرد الكلام ويمنعه ينزل عمودي */
+    }
+
+    /* 4. جدول المواد (عريض وقابل للسحب باللمس ومفيش حاجة هتقصه) */
+    #subjectsSection {
+        transform: translateX(0) !important; 
+        margin-left: 0 !important; 
+        margin-right: 0 !important;
+        width: 100% !important;
+        padding: 0 10px !important;
+        box-sizing: border-box !important;
+        margin-top: 35px !important;
+        margin-bottom: 35px !important;
+    }
+    .glowing-dept-title {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    .subjects-table-container {
+        display: block !important; /* بيمنع صندوق الجدول إنه يقص المحتوى العريض */
+        width: 100% !important;
+        max-width: 100% !important; 
+        overflow-x: auto !important; /* بيظهر شريط التمرير للسحب */
+        -webkit-overflow-scrolling: touch !important; 
+        border-radius: 8px !important;
+    }
+    .subjects-table {
+        width: 100% !important;
+        min-width: 750px !important; /* بيجبر الجدول إنه يفرد بالعرض تماماً */
+    }
+}
+
+/* =================================================================
+   تصميم قائمة اقتراحات البحث الذكي (الشكل الاحترافي)
+   ================================================================= */
+
+/* 1. المربع الكبير اللي بيضم الاقتراحات كلها */
+.search-suggestions-box {
+    position: absolute;
+    top: 120%; /* بيخلي القائمة تظهر تحت شريط البحث بمسافة بسيطة */
+    left: 0;
+    width: 100%;
+    background: rgba(15, 20, 38, 0.95); /* لون داكن وشفاف شيك جداً */
+    backdrop-filter: blur(10px); /* تأثير الزجاج المغبش */
+    border: 1px solid rgba(79, 172, 254, 0.4); /* إطار أزرق مضيء خفيف */
+    border-radius: 15px;
+    max-height: 350px; /* أقصى طول للقائمة عشان لو النتائج كتير */
+    overflow-y: auto; /* بيشغل بكرة السكرول لو النتائج كتير */
+    z-index: 10000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: none; /* مخفية في البداية والجافاسكريبت بيظهرها تلقائي */
+    padding: 10px 0;
+    direction: rtl; /* تظبيط اتجاه الكلام لليمين */
+}
+
+/* 2. تظبيط شكل شريط التمرير (السكرول) جوه قائمة البحث */
+.search-suggestions-box::-webkit-scrollbar {
+    width: 6px;
+}
+.search-suggestions-box::-webkit-scrollbar-thumb {
+    background: #4facfe;
+    border-radius: 10px;
+}
+
+/* 3. تصميم السطر الواحد (النتيجة الواحدة) جوا القائمة */
+.suggestion-item {
+    padding: 12px 20px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 15px; /* المسافة بين الشارة الملونة والكلمة */
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* خط خفيف بين كل نتيجة والتانية */
+}
+
+/* بنشيل الخط من آخر نتيجة عشان الشكل يبقى نظيف */
+.suggestion-item:last-child {
+    border-bottom: none; 
+}
+
+/* 4. تأثير لما تقف بالماوس على النتيجة */
+.suggestion-item:hover {
+    background: rgba(79, 172, 254, 0.15); /* لون أزرق خفيف جداً في الخلفية */
+    padding-right: 25px; /* حركة سحرية: النتيجة بتتحرك يمين سنة صغيرة */
+    color: #FFD700; /* الكلمة نفسها بتنور أصفر ذهبي */
+}
+
+/* 5. تصميم الشارة الملونة (كلمة: شعبة / مادة / معهد) */
+.suggestion-badge {
+    background: linear-gradient(135deg, #8e2de2, #4facfe); /* لون متدرج موف في أزرق */
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 900;
+    min-width: 55px; /* تثبيت العرض عشان يبقوا كلهم تحت بعض بانتظام */
+    text-align: center;
+    box-shadow: 0 0 10px rgba(142, 45, 226, 0.4); /* توهج خفيف حوالين الشارة */
+}
+
+/* تنسيقات شاشة الاستمارة */
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: right;
+    direction: rtl;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.input-group input, 
+.input-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
+    font-size: 16px;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+/* تنسيق الخانات في الوضع الليلي والنهاري */
+body.dark-theme .input-group input, 
+body.dark-theme .input-group select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(142, 45, 226, 0.4); /* لون متناسق مع الإطار الماسي */
+}
+
+body.dark-theme .input-group input:focus, 
+body.dark-theme .input-group select:focus {
+    border-color: #00f2fe;
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+}
+
+/* حل مشكلة لون الـ options في الـ select داخل الوضع الليلي */
+.input-group select option {
+    background-color: var(--sidebar-bg);
+    color: var(--sidebar-text);
+}
+
+.student-registration-form {
+    transition: opacity 0.5s ease;
+}
+
+/* ================= تنسيقات الطباعة (3 ورقات) ================= */
+.print-only {
+    display: none;
+}
+
+@media print {
+    /* إخفاء كل الموقع وقت الطباعة */
+    body * {
+        visibility: hidden;
+    }
+    
+    /* إظهار منطقة الطباعة فقط */
+    #printArea, #printArea * {
+        visibility: visible;
+    }
+    
+    #printArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+
+    /* تنسيق الورقة الواحدة وفصلها */
+    .print-page {
+        position: relative;
+        width: 210mm; 
+        height: 297mm; 
+        page-break-after: always; /* سحب ورقة جديدة */
+        overflow: hidden;
+        background: #fff; /* إجبار الخلفية تكون بيضاء للطباعة */
+    }
+
+    .print-page:last-child {
+        page-break-after: auto; 
+    }
+
+    .print-template-img {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+    }
+
+    .print-text {
+        position: absolute;
+        z-index: 2;
+        font-size: 16px;
+        font-weight: bold;
+        color: #000 !important; 
+        direction: rtl;
+    }
+}
+
+
+@keyframes glowingEffect {
+    0% { box-shadow: 0 0 5px #4facfe; border-color: #4facfe; }
+    100% { box-shadow: 0 0 20px #FFD700; border-color: #FFD700; transform: scale(1.03); }
+}
+
+
+#registrationFormPage .special-page-content {
+    margin-top: 100px !important; 
+    background: rgba(15, 20, 38, 0.85); 
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(0, 242, 254, 0.3);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+
+.special-page-container.active-page {
+    z-index: 1000;
+}
+
+#registrationFormPage {
+    display: none;
+}
+
+/* ================= تنسيقات وحركات صفحة دفع المصاريف ================= */
+#paymentSpecialPage {
+    display: none;
+}
+#paymentSpecialPage.active-page {
+    display: block;
+}
+
+.pay-inst-btn {
+    transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    position: relative;
+    z-index: 1;
+}
+
+/* حالة الزرار المختار: بيكبر، بينزل لتحت في النص، وبينور */
+.pay-inst-btn.selected-pay-inst {
+    transform: translateY(40px) scale(1.15) !important;
+    margin: 0 auto;
+    z-index: 10;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.5);
+    cursor: default; /* منع الضغط عليه مرة تانية */
+}
+
+/* الكلاس ده بيخفي باقي الأزرار ويصغرهم عشان يختفوا بنعومة */
+.pay-inst-btn.hidden-inst {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.5);
+    position: absolute; /* بيخليهم مياخدوش مساحة من الشاشة */
+}
+
+/* تنسيق شبكة المعاهد في صفحة الدفع لتكون 3 بجوار بعضها */
+#paymentInstitutesGrid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 20px !important;
+    width: 100% !important;
+}
+
+/* تنسيق متجاوب لضمان عملها على الهواتف المحمولة بشكل صحيح */
+@media (max-width: 900px) {
+    #paymentInstitutesGrid {
+        grid-template-columns: repeat(2, 1fr) !important; /* معهدين بجوار بعض للهواتف الكبيرة */
+    }
+}
+@media (max-width: 600px) {
+    #paymentInstitutesGrid {
+        grid-template-columns: 1fr !important; /* معهد واحد تحت الآخر للهواتف الصغيرة */
+    }
+}
+
+/* حركة المعهد المختار في صفحة الدفع (نزول لأسفل ويمين بنعومة) */
+.pay-inst-btn {
+    transition: all 0.6s ease-in-out !important; /* جعل الحركة ناعمة وبطيئة */
+}
+
+.selected-pay-inst {
+    transform: translate(40px, 30px) scale(0.95) !important; /* النزول 30 بيكسل والتوجه لليمين 40 بيكسل */
+    box-shadow: -5px 10px 20px rgba(0,0,0,0.3) !important;
+    border: 2px solid #00f2fe !important; /* إضافة إطار مميز للمعهد المختار */
+    z-index: 10;
+    opacity: 1 !important;
+}
+
+/* ضبط ألوان خانات إدخال البيانات في صفحة الدفع لضمان وضوح النص */
+#paymentStudentForm input {
+    color: #000000 !important; /* إجبار النص على أن يكون باللون الأسود */
+    background-color: #ffffff !important; /* إجبار الخلفية على أن تكون بيضاء */
+    font-weight: bold !important; /* جعل الخط سميك ليكون أوضح للطالب */
+    border: 1px solid #ccc !important;
+    padding: 10px;
+}
+
+/* في حالة استخدام الوضع الليلي (Dark Mode) يجب عكس الألوان */
+body.dark-theme #paymentStudentForm input {
+    color: #ffffff !important; /* نص أبيض */
+    background-color: #222222 !important; /* خلفية داكنة */
+    border-color: #555 !important;
+}
+
+/* الكود المسؤول عن سنترة صفحات المعهد ودفع المصاريف بالمللي لما القائمة تتقفل */
+.sidhedar.sidebar-collapsed ~ .special-page-container {
+    padding-left: 85px !important;
+}
