@@ -69,9 +69,14 @@
                             <span class="dropdown-icon material-symbols-outlined">keyboard_arrow_down</span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li class="nav-item"><a href="#" class="nav-link" data-i18n="pay_fees">دفع مصاريف المعهد</a></li>
-                            <li class="nav-item"><a href="#" class="nav-link" data-i18n="get_form">استخراج الاستمارة</a></li>
-                            <li class="nav-item"><a href="#" class="nav-link" data-i18n="enrollment_cert">إثبات قيد</a></li>
+                            <li class="nav-item"><a href="#" class="nav-link" id="payFeesBtn" data-i18n="pay_fees">دفع مصاريف المعهد</a></li>
+<li class="nav-item">
+    <a href="#" class="nav-link" id="openFormBtn">
+        <i class="fa-solid fa-file-lines"></i>
+        <span class="nav-label" data-i18n="get_form">استخراج الاستمارة</span>
+    </a>
+</li>
+<li class="nav-item"><a href="#" class="nav-link" data-i18n="enrollment_cert">إثبات قيد</a></li>
                             <li class="nav-item"><a href="#" class="nav-link" data-i18n="metro_form">استمارة المترو</a></li>
                             <li class="nav-item"><a href="#" class="nav-link" data-i18n="institute_card">كارنيه المعهد</a></li>
                             <li class="nav-item"><a href="#" class="nav-link" data-i18n="materials_cd">اسطوانة المواد</a></li>
@@ -344,12 +349,189 @@
             </footer>
         </main>
     </div>
-       <div id="instituteSpecialPage" class="special-page-container">
-        
-        <div id="movedButton" class="colorful-btn blue-btn moved-state">
-            <i class="fa-solid fa-gear"></i>
-            <span>المعهد الفني<br>الصناعي بالمطرية</span>
+    
+
+        <div id="actualFormStep" class="form-container typing-container" style="display: none;">
+            <form id="studentRegistrationForm">
+                
+                <h3 style="color: #00f2fe; margin-bottom: 20px; border-bottom: 1px solid #00f2fe; padding-bottom: 10px;">البيانات الأساسية</h3>
+                
+                <div class="input-group">
+                    <label>اسم الطالب (كما بشهادة الميلاد)</label>
+                    <input type="text" id="stuName" required placeholder="الاسم رباعي أو خماسي">
+                </div>
+                
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label>الرقم القومي (14 رقم)</label>
+                        <input type="text" id="stuNationalId" required maxlength="14">
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>كود الطالب</label>
+                        <input type="number" id="stuCode" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>الصورة الشخصية (خلفية بيضاء 4×6)</label>
+                    <input type="file" id="stuPhoto" accept="image/*" style="background: rgba(255,255,255,0.1); padding: 10px;">
+                </div>
+
+                <h3 style="color: #00f2fe; margin-bottom: 20px; margin-top: 30px; border-bottom: 1px solid #00f2fe; padding-bottom: 10px;">بيانات التواصل والعنوان</h3>
+                
+                <div class="input-group">
+                    <label>العنوان بالتفصيل</label>
+                    <input type="text" id="stuAddress" required placeholder="المحافظة - القسم/المركز - الشارع">
+                </div>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label>هاتف محمول الطالب</label>
+                        <input type="text" id="stuPhone" required>
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>هاتف ولي الأمر</label>
+                        <input type="text" id="parentPhone" required>
+                    </div>
+                </div>
+
+                <h3 style="color: #00f2fe; margin-bottom: 20px; margin-top: 30px; border-bottom: 1px solid #00f2fe; padding-bottom: 10px;">بيانات القيد الدراسي</h3>
+
+                <div style="display: flex; gap: 15px;">
+                    <div class="input-group" style="flex: 1;">
+                        <label>الشعبة / التخصص</label>
+                        <select id="stuDept" required>
+                            <option value="" disabled selected>اختر الشعبة...</option>
+                            <option value="تشغيل وتشكيل المعادن">تشغيل وتشكيل المعادن</option>
+                            <option value="سيارات">سيارات</option>
+                            <option value="شبكات وآلات كهربية">شبكات وآلات كهربية</option>
+                            <option value="تكنولوجيا معلومات">تكنولوجيا معلومات</option>
+                        </select>
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>اللغة الأجنبية الأولى</label>
+                        <select id="stuLang" required>
+                            <option value="الإنجليزية">الإنجليزية</option>
+                            <option value="الفرنسية">الفرنسية</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" id="saveDataBtn" class="colorful-btn green-btn" style="width: 100%; height: 60px; margin-top: 20px;">
+                    <i class="fa-solid fa-save" style="font-size: 20px; margin-bottom: 0;"></i>
+                    <span style="font-size: 16px;">حفظ واعتماد البيانات</span>
+                </button>
+
+                <button type="button" id="printFormBtn" class="colorful-btn" style="width: 100%; height: 60px; margin-top: 15px; display: none; background: #3498db; border-color: #3498db;">
+                    <i class="fa-solid fa-print" style="font-size: 20px; margin-bottom: 0;"></i>
+                    <span style="font-size: 16px;">طباعة الاستمارة (3 ورقات)</span>
+                </button>
+            </form>
+            
+            <div id="successMessage" class="hidden-block" style="text-align: center; color: #2ecc71; margin-top: 20px;">
+                <i class="fa-solid fa-circle-check" style="font-size: 40px; margin-bottom: 10px;"></i>
+                <p style="font-weight: bold; font-size: 18px;">تم حفظ بياناتك بنجاح! يرجى طباعة الاستمارة الآن.</p>
+            </div>
         </div>
+    </div>
+</div>
+
+<div id="printArea" class="print-only">
+    
+    <div class="print-page">
+        <div id="p1-name" class="print-text" style="top: 25%; right: 15%;"></div>
+        <div id="p1-code" class="print-text" style="top: 28%; right: 15%;"></div>
+        <div id="p1-nationalId" class="print-text" style="top: 31%; right: 15%;"></div>
+        <div id="p1-address" class="print-text" style="top: 34%; right: 15%;"></div>
+        <div id="p1-phone" class="print-text" style="top: 37%; right: 15%;"></div>
+        <div id="p1-dept" class="print-text" style="top: 40%; right: 15%;"></div>
+    </div>
+
+    <div class="print-page">
+        <div id="p2-name" class="print-text" style="top: 15%; right: 25%;"></div>
+        <div id="p2-nationalId" class="print-text" style="top: 20%; right: 25%;"></div>
+        <div id="p2-dept" class="print-text" style="top: 25%; right: 25%;"></div>
+    </div>
+
+    <div class="print-page">
+        <div id="p3-name" class="print-text" style="top: 22%; right: 35%;"></div>
+    </div>
+
+</div>
+                
+        <div id="paymentSpecialPage" class="special-page-container">
+    <div class="special-page-content" style="max-width: 900px; margin: 100px auto 0;">
+        
+        <h2 class="magic-title" id="paymentMainTitle" style="text-align: center; border-right: none;">يرجى اختيار المعهد لدفع المصاريف</h2>
+
+        <div class="six-buttons-section" id="paymentInstitutesGrid" style="margin-top: 40px; flex-wrap: wrap; transition: all 0.5s;">
+            <div class="colorful-btn blue-btn pay-inst-btn" data-name="المعهد الفني الصناعي بالمطرية">
+                <i class="fa-solid fa-gear"></i><span>المعهد الفني<br>الصناعي بالمطرية</span>
+            </div>
+            <div class="colorful-btn orange-btn pay-inst-btn" data-name="المعهد الفني التجاري بالمطرية">
+                <i class="fa-solid fa-calculator"></i><span>المعهد الفني التجاري<br>بالمطرية</span>
+            </div>
+            <div class="colorful-btn green-btn pay-inst-btn" data-name="المعهد الفني الصناعي بشبرا">
+                <i class="fa-solid fa-wrench"></i><span>المعهد الفني<br>الصناعي بشبرا</span>
+            </div>
+            <div class="colorful-btn purple-btn pay-inst-btn" data-name="المعهد الفني التجاري بشبرا">
+                <i class="fa-solid fa-money-bill-wave"></i><span>المعهد الفني التجاري<br>بشبرا</span>
+            </div>
+            <div class="colorful-btn yellow-btn pay-inst-btn" data-name="المعهد الفني للسياحة والفنادق بالمطرية">
+                <i class="fa-solid fa-tree"></i><span>المعهد الفني للسياحة<br>والفنادق بالمطرية</span>
+            </div>
+            <div class="colorful-btn red-btn pay-inst-btn" data-name="المعهد الفني للرى والصرف والمساحة بالمطرية">
+                <i class="fa-solid fa-map-location-dot"></i><span>المعهد الفني للرى<br>والصرف والمساحة<br>بالمطرية</span>
+            </div>
+        </div>
+
+        <div class="section-block hidden-block" id="paymentYearSection" style="margin-top: 60px; text-align: center;">
+            <h2 class="magic-title" style="border-right: none; font-size: 24px; color:#4facfe;">برجاء تحديد الفرقة الدراسية</h2>
+            <div class="water-buttons-row" style="justify-content: center; margin-top: 20px;">
+                <button class="water-btn pay-year-btn" data-val="1">الفرقة الأولى</button>
+                <button class="water-btn pay-year-btn" data-val="2">الفرقة الثانية</button>
+            </div>
+        </div>
+
+        <div class="form-container typing-container hidden-block" id="paymentFormSection" style="margin: 40px auto; max-width: 650px; text-align: center;">
+    
+    <h3 style="color: #00f2fe; margin-bottom: 25px; border-bottom: 1px dashed #00f2fe; padding-bottom: 15px;">لدفع المصاريف يرجى كتابة البيانات الآتية</h3>
+    
+    <form id="paymentStudentForm">
+        
+        <div class="input-group" style="max-width: 350px; margin: 0 auto 15px auto;">
+            <label style="text-align: center; margin-bottom: 8px;">الرقم القومي (14 رقم)</label>
+            <input type="text" id="payStuNID" required maxlength="14" placeholder="أدخل الرقم القومي كاملاً" style="text-align: center; font-weight: bold;">
+        </div>
+        
+        <div class="input-group" style="max-width: 350px; margin: 0 auto 25px auto;">
+            <label style="text-align: center; margin-bottom: 8px;">الاسم الرباعي</label>
+            <input type="text" id="payStuName" required placeholder="أدخل اسمك الرباعي" style="text-align: center; font-weight: bold;">
+        </div>
+        
+        <button type="submit" class="submit-btn" style="background: #27ae60; height: 60px; max-width: 350px; margin: 0 auto; display: flex; justify-content: center; align-items: center;">
+            التحقق من البيانات واستخراج الكود <i class="fa-solid fa-qrcode" style="margin-right: 8px;"></i>
+        </button>
+        
+    </form>
+
+    <div id="fawryResultBox" style="display: none; margin-top: 30px; text-align: center; background: #f1c40f; color: #000; padding: 25px; border-radius: 15px; border: 3px dashed #333; box-shadow: 0 10px 20px rgba(0,0,0,0.3); max-width: 400px; margin-left: auto; margin-right: auto;">
+        <img src="Fawry-Logo.jpg" alt="Fawry" style="height: 60px; margin-bottom: 15px; background: #fff; padding: 3px 7px; border-radius: 8px;">
+        <h4 style="font-weight: 900; font-size: 20px; margin-bottom: 10px;">كود الدفع المرجعي (FawryPay)</h4>
+        <div style="font-size: 45px; font-weight: 900; letter-spacing: 8px; margin: 15px 0; font-family: monospace; color: #d35400;">748392015</div>
+        <p style="font-size: 15px; font-weight: 900;">برجاء التوجه لأقرب ماكينة فوري ودفع المصاريف باستخدام هذا الكود خلال 48 ساعة.</p>
+    </div>
+    
+</div>
+    </div>
+</div>      
+        
+       <div id="instituteSpecialPage" class="special-page-container">
+    
+    <div id="movedButton" class="colorful-btn blue-btn moved-state">
+        <i class="fa-solid fa-gear"></i>
+        <span>المعهد الفني<br>الصناعي بالمطرية</span>
+    </div>
 
         <div class="special-page-content" id="specialContent">
             
@@ -357,11 +539,7 @@
                 <h2 class="magic-title">نبذة عن المعهد</h2>
                 <div class="typing-container" id="typingBox">
                     <p class="scroll-typing-text" id="aboutText">
-                        يعتبر المعهد الفني الصناعي بالمطرية من أعرق المعاهد التكنولوجية في مصر. يهدف المعهد إلى تخريج كوادر فنية مدربة على أحدث التقنيات لمواكبة متطلبات سوق العمل المحلي والدولي. يضم المعهد نخبة من أفضل الأساتذة والمهندسين، ويوفر بيئة تعليمية تفاعلية تعتمد على التطبيق العملي بجانب الدراسة الأكاديمية، مما يجعله الخيار الأول للطلاب الطامحين في التميز الهندسي والصناعي لبناء مستقبل مشرق للوطن.
-                        يعتبر المعهد الفني الصناعي بالمطرية من أعرق المعاهد التكنولوجية في مصر. يهدف المعهد إلى تخريج كوادر فنية مدربة على أحدث التقنيات لمواكبة متطلبات سوق العمل المحلي والدولي. يضم المعهد نخبة من أفضل الأساتذة والمهندسين، ويوفر بيئة تعليمية تفاعلية تعتمد على التطبيق العملي بجانب الدراسة الأكاديمية، مما يجعله الخيار الأول للطلاب الطامحين في التميز الهندسي والصناعي لبناء مستقبل مشرق للوطن.
-                        يعتبر المعهد الفني الصناعي بالمطرية من أعرق المعاهد التكنولوجية في مصر. يهدف المعهد إلى تخريج كوادر فنية مدربة على أحدث التقنيات لمواكبة متطلبات سوق العمل المحلي والدولي. يضم المعهد نخبة من أفضل الأساتذة والمهندسين، ويوفر بيئة تعليمية تفاعلية تعتمد على التطبيق العملي بجانب الدراسة الأكاديمية، مما يجعله الخيار الأول للطلاب الطامحين في التميز الهندسي والصناعي لبناء مستقبل مشرق للوطن.
-                        
-                        يعتبر المعهد الفني الصناعي بالمطرية من أعرق المعاهد التكنولوجية في مصر. يهدف المعهد إلى تخريج كوادر فنية مدربة على أحدث التقنيات لمواكبة متطلبات سوق العمل المحلي والدولي. يضم المعهد نخبة من أفضل الأساتذة والمهندسين، ويوفر بيئة تعليمية تفاعلية تعتمد على التطبيق العملي بجانب الدراسة الأكاديمية، مما يجعله الخيار الأول للطلاب الطامحين في التميز الهندسي والصناعي لبناء مستقبل مشرق للوطن.
+                        يعتبر المعهد الفني الصناعي بالمطرية من أعرق المعاهد التكنولوجية في مصر. يهدف المعهد إلى تخريج كوادر فنية مدربة على أحدث التقنيات لمواكبة متطلبات سوق العمل المحلي والدولي. يضم المعهد نخبة من أفضل الأساتذة والمهندسين، ويوفر بيئة تعليمية تفاعلية تعتمد على التطبيق العملي بجانب الدراسة الأكاديمية، مما يجعله الخيار الأول للطلاب الطامحين في التميز الهندسي والصناعي لبناء مستقبل مشرق للوطن.                        
                     </p>
                 </div>
             </div>
@@ -408,9 +586,27 @@
 
         </div>
     </div> 
-    <script src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAKcDaMyuZj4-ssBVmydjsyiJV_6tlZCPM",
+    authDomain: "matareya-institute.firebaseapp.com",
+    databaseURL: "https://matareya-institute-default-rtdb.firebaseio.com",
+    projectId: "matareya-institute",
+    storageBucket: "matareya-institute.firebasestorage.app",
+    messagingSenderId: "413475082085",
+    appId: "1:413475082085:web:71673ba92b969ddceedb8c"
+  };
+  // تهيئة الفايربيز
+  firebase.initializeApp(firebaseConfig);
+</script>
+    <!-- ضع الزر أولاً ليقرأه المتصفح -->
     <button id="scrollToTopBtn" class="scroll-to-top" title="العودة للأعلى">
         <i class="fas fa-arrow-up"></i>
     </button>
+    
+    <!-- ثم استدعِ الجافاسكريبت في النهاية تماماً -->
+    <script src="script.js"></script>
 </body>
 </html>
