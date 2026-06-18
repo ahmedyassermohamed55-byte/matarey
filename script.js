@@ -714,19 +714,54 @@ setTimeout(() => {
 
 // ================= دالة الرجوع للصفحة الرئيسية بأنيميشن البلع =================
 function returnToHome() {
-    // 1. إعادة الصفحة الأصلية وإخفاء صفحة المعهد الخاصة
     const specialPage = document.getElementById('instituteSpecialPage');
+    const registrationFormPage = document.getElementById('registrationFormPage');
     const mainContent = document.querySelector('.main-content');
     const movedBtn = document.getElementById('movedButton');
-    
-    if(specialPage) specialPage.classList.remove('active-page');
-    if(mainContent) mainContent.classList.remove('fade-out-main');
+    // (ضيف السطور دي جوة دالة returnToHome())
+    const paymentSpecialPage = document.getElementById('paymentSpecialPage');
+    if(paymentSpecialPage) {
+        paymentSpecialPage.classList.remove('active-page');
+        document.getElementById('paymentMainTitle').style.display = 'block';
+        document.getElementById('paymentMainTitle').style.opacity = '1';
+        
+        document.querySelectorAll('.pay-inst-btn').forEach(btn => {
+            btn.classList.remove('hidden-inst', 'selected-pay-inst');
+        });
+        
+        document.getElementById('paymentYearSection').classList.remove('show-block');
+        document.getElementById('paymentFormSection').classList.remove('show-block');
+        document.querySelectorAll('.pay-year-btn').forEach(b => b.classList.remove('active-water'));
+        
+        document.getElementById('fawryResultBox').style.display = 'none';
+        const pForm = document.getElementById('paymentStudentForm');
+        if(pForm) pForm.reset();
+    }
+    // إخفاء صفحة المعهد الخاصة
+    if(specialPage) {
+        specialPage.classList.remove('active-page');
+        specialPage.style.display = ''; // العودة للوضع الافتراضي
+    }
+
+    // إخفاء صفحة الاستمارة (التعديل المطلوب لضمان عدم تداخل الصفحات)
+    if(registrationFormPage) {
+        registrationFormPage.classList.remove('active-page');
+        registrationFormPage.style.display = 'none';
+    }
+
+    // إظهار المحتوى الرئيسي مجدداً
+    if(mainContent) {
+        mainContent.classList.remove('fade-out-main');
+        mainContent.style.display = 'flex'; // إرجاع الواجهة الرئيسية للعمل
+    }
+
     if(movedBtn) movedBtn.classList.remove('fly-top-right');
 
     // مسح نص البحث عند العودة للرئيسية
+    const siteSearchInput = document.getElementById('siteSearchInput');
     if(siteSearchInput) siteSearchInput.value = '';
 
-    // 2. تصفير كل التحديدات داخل صفحة المعهد
+    // تصفير كل التحديدات داخل صفحة المعهد
     const termsSection = document.getElementById('termsSection');
     const deptsSection = document.getElementById('deptsSection');
     const subjectsSection = document.getElementById('subjectsSection');
@@ -741,21 +776,20 @@ function returnToHome() {
     selectedYear = null;
     selectedTerm = null;
 
-    // 3. تشغيل أنيميشن "البلع" باتجاه اليمين للمسارات الفرعية فقط
-    const items = breadcrumbContainer.querySelectorAll('.breadcrumb-item, .breadcrumb-separator');
+    // تشغيل أنيميشن "البلع" باتجاه اليمين للمسارات الفرعية فقط
+    const items = document.getElementById('breadcrumbContainer').querySelectorAll('.breadcrumb-item, .breadcrumb-separator');
     items.forEach((el, index) => {
         if (index > 0) {
             el.classList.add('swallowed'); 
         }
     });
 
-    // 4. تحديث مصفوفة المسارات بعد انتهاء تأثير الأنيميشن
+    // تحديث مصفوفة المسارات بعد انتهاء تأثير الأنيميشن
     setTimeout(() => {
         currentPath = [{ id: 'home', title: 'الصفحة الرئيسية' }];
         renderBreadcrumbs();
     }, 400);
 }
-
 // دالة التحكم عند الضغط على أي مسار من فوق
 function handleBreadcrumbClick(id, index) {
     if (id === 'home') {
@@ -923,33 +957,252 @@ function executeSearch(keyword, type) {
     }
 }
 
-// إضافة تأثير الإضاءة للـ CSS برمجياً (زي ما كانت عندك)
-const styleSheet = document.styleSheets[0];
-styleSheet.insertRule(`
-    @keyframes glowingEffect {
-        0% { box-shadow: 0 0 5px #4facfe; border-color: #4facfe; }
-        100% { box-shadow: 0 0 20px #FFD700; border-color: #FFD700; transform: scale(1.03); }
-    }
-`, styleSheet.cssRules.length);
 
-// ================= زر العودة للأعلى =================
+
 const scrollToTopBtn = document.getElementById('scrollToTopBtn');
 
-// إظهار وإخفاء الزرار بناءً على النزول في الصفحة
-window.addEventListener('scroll', () => {
-    // لو المستخدم نزل أكتر من 300 بيكسل، الزرار يظهر
-    if (window.scrollY > 300) {
-        scrollToTopBtn.classList.add('show');
-    } else {
-        // لو طلع فوق تاني، الزرار يختفي
-        scrollToTopBtn.classList.remove('show');
+if (scrollToTopBtn) {
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            scrollToTopBtn.classList.add('show');
+        } else {
+            scrollToTopBtn.classList.remove('show');
+        }
+    });
+
+    scrollToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
+// =========================================================================
+// 7. برمجة شاشة الاستمارة الشاملة (مايكروسوفت + حفظ + طباعة 3 ورقات)
+// =========================================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const openFormBtn = document.getElementById('openFormBtn');
+    const registrationFormPage = document.getElementById('registrationFormPage');
+    
+    const microsoftLoginStep = document.getElementById('microsoftLoginStep');
+    const msLoginBtn = document.getElementById('msLoginBtn');
+    
+    const actualFormStep = document.getElementById('actualFormStep');
+    const studentRegistrationForm = document.getElementById('studentRegistrationForm');
+    const saveDataBtn = document.getElementById('saveDataBtn');
+    const printFormBtn = document.getElementById('printFormBtn');
+    const successMessage = document.getElementById('successMessage');
+    
+ // فتح شاشة الاستمارة الإلكترونية المستقلة كصفحة جديدة تابعة للوزارة
+if(openFormBtn) {
+    openFormBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        // التحويل المباشر لملف الاستمارة المستقل
+        window.location.href = 'register.html';
+    });
+}
+    // 2. محاكاة تسجيل الدخول بمايكروسوفت
+    if(msLoginBtn) {
+        msLoginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const originalText = msLoginBtn.innerHTML;
+            msLoginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق من Office 365...';
+            
+            // محاكاة تحميل لمدة ثانيتين (هنا مستقبلاً هيتحط كود الفايربيز الفعلي)
+            setTimeout(() => {
+                microsoftLoginStep.style.display = 'none';
+                actualFormStep.style.display = 'block';
+                msLoginBtn.innerHTML = originalText; // نرجع الزرار لأصله
+            }, 2000);
+        });
+    }
+
+    // 3. الضغط على حفظ (توزيع البيانات على 3 ورقات)
+    if(studentRegistrationForm) {
+        studentRegistrationForm.addEventListener('submit', function(e) {
+            e.preventDefault(); 
+            
+            // تجميع البيانات
+            const name = document.getElementById('stuName').value;
+            const code = document.getElementById('stuCode').value;
+            const nationalId = document.getElementById('stuNationalId').value;
+            const address = document.getElementById('stuAddress').value;
+            const phone = document.getElementById('stuPhone').value;
+            const dept = document.getElementById('stuDept').value;
+            
+            // --- توزيع البيانات على الورقة الأولى ---
+            document.getElementById('p1-name').innerText = name;
+            document.getElementById('p1-code').innerText = code;
+            document.getElementById('p1-nationalId').innerText = nationalId;
+            document.getElementById('p1-address').innerText = address;
+            document.getElementById('p1-phone').innerText = phone;
+            document.getElementById('p1-dept').innerText = dept;
+
+            // --- توزيع البيانات على الورقة الثانية ---
+            document.getElementById('p2-name').innerText = name;
+            document.getElementById('p2-nationalId').innerText = nationalId;
+            document.getElementById('p2-dept').innerText = dept;
+
+            // --- توزيع البيانات على الورقة الثالثة ---
+            document.getElementById('p3-name').innerText = name;
+
+            // --- هنا كود الفايربيز لرفع البيانات (جاهز للتشغيل لاحقاً) ---
+           
+            firebase.database().ref('Student_Forms/' + nationalId).set({
+                Name: name, Code: code, NationalID: nationalId, Address: address, 
+                Phone: phone, Dept: dept, Timestamp: new Date().toLocaleString('ar-EG')
+            });
+            
+
+            // تغيير الواجهة (إظهار النجاح وزرار الطباعة)
+            saveDataBtn.style.display = 'none';
+            successMessage.classList.add('show-block');
+            printFormBtn.style.display = 'flex';
+            
+            // تمرير الشاشة للأسفل علشان الطالب يشوف زرار الطباعة
+            printFormBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+
+        // 4. الضغط على زرار الطباعة
+        if(printFormBtn) {
+            printFormBtn.addEventListener('click', function() {
+                window.print();
+            });
+        }
     }
 });
 
-// لما المستخدم يدوس على الزرار
-scrollToTopBtn.addEventListener('click', () => {
-    window.scrollTo({
-        top: 0, // يطلع لأول الصفحة خالص
-        behavior: 'smooth' // يطلع بنعومة مش مرة واحدة
+// =========================================================================
+// 8. برمجة شاشة دفع المصاريف (حركات الأزرار، الفورم، وكود فوري الوهمي)
+// =========================================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    const payFeesBtn = document.getElementById('payFeesBtn');
+    const paymentSpecialPage = document.getElementById('paymentSpecialPage');
+    const paymentMainTitle = document.getElementById('paymentMainTitle');
+    const payInstBtns = document.querySelectorAll('.pay-inst-btn');
+    const paymentYearSection = document.getElementById('paymentYearSection');
+    const payYearBtns = document.querySelectorAll('.pay-year-btn');
+    const paymentFormSection = document.getElementById('paymentFormSection');
+    const paymentStudentForm = document.getElementById('paymentStudentForm');
+    const fawryResultBox = document.getElementById('fawryResultBox');
+
+    // 1. فتح شاشة الدفع من القائمة الجانبية
+    if(payFeesBtn) {
+        payFeesBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // إخفاء الصفحة الرئيسية
+            const mainContent = document.querySelector('.main-content');
+            if(mainContent) mainContent.classList.add('fade-out-main');
+            
+            // إغلاق كل الصفحات الخاصة الأخرى
+            document.querySelectorAll('.special-page-container').forEach(p => p.classList.remove('active-page'));
+            
+            // إظهار صفحة الدفع
+            paymentSpecialPage.classList.add('active-page');
+            
+            // ضبط المسار (Breadcrumbs)
+            currentPath = [
+                { id: 'home', title: 'الصفحة الرئيسية' },
+                { id: 'pay_fees', title: 'دفع مصاريف المعهد' }
+            ];
+            renderBreadcrumbs();
+            
+            // قفل القائمة ورفع الشاشة لفوق
+            document.querySelector(".sidhedar").classList.add("sidebar-collapsed");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+   // 2. الضغط على زرار المعهد (إلغاء الاختفاء وتفعيل التبديل والنزول لليمين)
+payInstBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+        
+        // إخفاء العنوان الرئيسي بنعومة
+        paymentMainTitle.style.opacity = '0';
+        setTimeout(() => paymentMainTitle.style.display = 'none', 300);
+
+        // ========================================================
+        // التعديلات الجديدة: تصفير الفورم وإخفاؤه عند تغيير المعهد
+        // ========================================================
+        // 1. إخفاء الفورم بتاع الرقم القومي والاسم
+        paymentFormSection.classList.remove('show-block');
+        // 2. إخفاء كود فوري لو كان ظاهر
+        fawryResultBox.style.display = 'none';
+        // 3. مسح البيانات القديمة المكتوبة في الفورم
+        if (paymentStudentForm) paymentStudentForm.reset();
+        // 4. إزالة التحديد (اللون) من زراير الفرقة علشان يختار من جديد
+        payYearBtns.forEach(b => b.classList.remove('active-water'));
+        // ========================================================
+
+        // -- التعديل القديم الخاص بك كما هو --
+        // أولاً: نقوم بإزالة فئة التحديد من جميع المعاهد لضمان التبديل السليم
+        payInstBtns.forEach(otherBtn => {
+            otherBtn.classList.remove('selected-pay-inst');
+        });
+        
+        // ثانياً: نضيف فئة التحديد للمعهد الذي تم الضغط عليه فقط
+        this.classList.add('selected-pay-inst');
+        
+        // تحديث مسار التنقل من فوق (Breadcrumbs)
+        const instName = this.getAttribute('data-name');
+        const payIndex = currentPath.findIndex(p => p.id === 'pay_fees');
+        if(payIndex !== -1) currentPath = currentPath.slice(0, payIndex + 1);
+        currentPath.push({ id: 'pay_inst', title: instName });
+        renderBreadcrumbs();
+
+        // إظهار زراير الفرقة بعد نصف ثانية (ليتناسب مع حركة الزر)
+        setTimeout(() => {
+            paymentYearSection.classList.add('show-block');
+        }, 500);
     });
+});
+    // 3. الضغط على الفرقة الأولى أو الثانية
+    payYearBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const yearName = this.innerText;
+            
+            // تظليل الزرار المختار
+            payYearBtns.forEach(sib => sib.classList.remove('active-water'));
+            this.classList.add('active-water');
+            
+            // تحديث مسار التنقل
+            const instIndex = currentPath.findIndex(p => p.id === 'pay_inst');
+            if(instIndex !== -1) currentPath = currentPath.slice(0, instIndex + 1);
+            currentPath.push({ id: 'pay_year', title: yearName });
+            renderBreadcrumbs();
+
+            // إظهار الفورم أسفل الزراير
+            paymentFormSection.classList.add('show-block');
+            setTimeout(() => {
+                paymentFormSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        });
+    });
+
+    // 4. الضغط على التحقق لاستخراج كود فوري
+    if(paymentStudentForm) {
+        paymentStudentForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // منع تحديث الصفحة
+            
+            const submitBtn = this.querySelector('.submit-btn');
+            const originalHtml = submitBtn.innerHTML;
+            
+            // حركة التحميل
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق من السيستم واستخراج الكود...';
+            
+            // بعد ثانية ونص، إظهار نتيجة الكود الوهمي
+            setTimeout(() => {
+                submitBtn.innerHTML = originalHtml; // إرجاع شكل الزرار
+                fawryResultBox.style.display = 'block'; // إظهار كود فوري
+                
+                // النزول بالشاشة لرؤية الكود براحة
+                fawryResultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 1500);
+        });
+    }
 });
