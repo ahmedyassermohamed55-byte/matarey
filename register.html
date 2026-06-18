@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة تسجيل الاستمارة الإلكترونية الرسمية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #1b2a3a;
+            --accent-color: #00a4ef;
+            --bg-color: #f4f6f9;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg-color); color: #333; }
+
+        .ministry-header {
+            background-color: #fff; padding: 15px 50px; display: flex;
+            justify-content: space-between; align-items: center;
+            border-bottom: 3px solid var(--primary-color); box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .ministry-title h2 { font-size: 18px; font-weight: 900; color: var(--primary-color); }
+        .ministry-title p { font-size: 12px; color: #7f8c8d; }
+        .portal-container { max-width: 900px; margin: 40px auto; padding: 20px; }
+
+        .ms-login-card {
+            background: #fff; max-width: 450px; margin: 60px auto; padding: 44px;
+            border: 1px solid #cbd5e1; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-radius: 2px;
+        }
+        .ms-logo { display: flex; align-items: center; gap: 6px; margin-bottom: 20px; }
+        .ms-square { width: 11px; height: 11px; display: inline-block; }
+        .ms-title { font-size: 24px; font-weight: 600; color: #1b1b1b; margin-bottom: 16px; }
+        .ms-input {
+            width: 100%; padding: 6px 10px; border: none; border-bottom: 1px solid #666;
+            font-size: 16px; margin-bottom: 20px; outline: none; color: #000 !important; background-color: #fff !important;
+        }
+        .ms-btn-primary {
+            background-color: #0067b8; color: #fff; padding: 6px 20px; border: none; min-width: 108px; cursor: pointer; font-size: 15px;
+        }
+
+        .form-card { background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-top: 4px solid var(--primary-color); }
+        .form-section-title { color: var(--primary-color); margin: 25px 0 15px 0; border-bottom: 2px solid #eaedf2; padding-bottom: 8px; font-size: 18px; font-weight: 700; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #4a5568; }
+        .input-group input, .input-group select {
+            width: 100%; padding: 12px 15px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 15px;
+            color: #000000 !important; background-color: #ffffff !important; outline: none; transition: 0.2s;
+        }
+        .flex-row { display: flex; gap: 20px; }
+        .flex-row .input-group { flex: 1; }
+        .submit-btn { background: var(--primary-color); color: white; border: none; width: 100%; padding: 15px; font-size: 16px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: 0.3s; margin-top: 20px; }
+        .submit-btn:hover { background: #111b24; }
+        .success-box { text-align: center; color: #2ecc71; padding: 30px; }
+        .print-btn { background: #27ae60; color: white; border: none; width: 100%; padding: 15px; font-size: 16px; font-weight: 700; border-radius: 6px; cursor: pointer; margin-top: 15px; }
+
+        /* ==================== تنسيقات الطباعة الجديدة (تم حل المشكلة هنا) ==================== */
+        .print-only { display: none; }
+
+       @media print {
+            /* 1. إجبار الطابعة على مقاس A4 وإلغاء هوامش المتصفح العشوائية التي تخرب الشكل */
+            @page {
+                size: A4;
+                margin: 0; 
+            }
+
+            /* 2. ضمان طباعة الألوان والخلفيات الرمادية للجدول بدقة عالية */
+            body { 
+                background: #fff; 
+                margin: 0; 
+                padding: 0; 
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact; 
+            }
+
+            .ministry-header, .portal-container { display: none !important; }
+            .print-only { display: block !important; }
+            
+            /* 3. ضبط كل ورقة لتأخذ مقاس A4 بالضبط بدون أن ترحل للورقة التالية */
+            .print-page {
+                width: 210mm;
+                min-height: 297mm; /* استخدام min-height بدلا من height لتجنب قص المحتوى */
+                padding: 15mm 15mm; /* تقليل الهوامش قليلا لضمان احتواء الجداول بأريحية */
+                margin: 0 auto;
+                page-break-after: always; /* أمر صريح بفصل الصفحات */
+                box-sizing: border-box;
+                background: #fff;
+                color: #000;
+                font-family: 'Times New Roman', 'Cairo', serif;
+                line-height: 1.6;
+                overflow: hidden; /* منع أي عنصر من الخروج عن الصفحة لمنع توليد أوراق بيضاء إضافية */
+            }
+            
+            .print-page:last-child { 
+                page-break-after: auto; /* لعدم طباعة ورقة رابعة فارغة في النهاية */
+            }
+            
+            .official-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+            .header-right { text-align: right; font-size: 14px; font-weight: bold; }
+            .header-left-photo { border: 2px solid #000; width: 110px; height: 140px; text-align: center; display: flex; justify-content: center; align-items: center; font-size: 12px; font-weight: bold; overflow: hidden; }
+            .header-left-photo img { width: 100%; height: 100%; object-fit: cover; }
+            
+            .exam-info-line { display: flex; justify-content: space-between; border: 1px solid #000; padding: 8px; margin-bottom: 20px; font-size: 14px; font-weight: bold; }
+            .seat-box { display: inline-block; width: 30px; height: 25px; border: 1px solid #000; text-align: center; margin-right: 5px; }
+
+            .numbered-list { margin-top: 15px; }
+            .list-item { display: flex; margin-bottom: 10px; font-size: 15px; align-items: baseline; }
+            .item-label { font-weight: bold; white-space: nowrap; }
+            .item-dots { flex-grow: 1; border-bottom: 1px dotted #000; padding-right: 10px; font-weight: bold; color: #000; }
+
+            .seal-container { display: flex; justify-content: space-between; margin-top: 20px; padding: 10px 0; }
+            .seal-circle { border: 2px dashed #000; width: 90px; height: 90px; border-radius: 50%; text-align: center; padding-top: 30px; font-size: 12px; font-weight: bold; }
+
+            .declaration-box { border: 1px solid #000; padding: 10px; margin-top: 15px; font-size: 14px; }
+            
+            .grades-table { width: 100%; border-collapse: collapse; margin-top: 15px; text-align: center; }
+            .grades-table th, .grades-table td { border: 1px solid #000; padding: 6px; font-size: 14px; }
+            .evaluation-large-box { border: 1px solid #000; width: 100px; height: 60px; margin: 0 auto; }
+
+           .main-title-p3 { text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 20px; }
+            .grid-two-columns { display: flex; gap: 20px; margin-top: 15px; }
+            .column-table { flex: 1; width: 50%; border-collapse: collapse; }
+            .column-table th, .column-table td { border: 1px solid #000; padding: 6px; text-align: center; font-size: 13px; }
+            
+            .checkbox-group { display: flex; gap: 20px; margin-top: 10px; font-weight: bold; }
+            .check-item { display: flex; align-items: center; gap: 5px; }
+            .square-check { width: 15px; height: 15px; border: 1px solid #000; display: inline-block; }
+            
+            .footer-signatures { display: flex; justify-content: space-between; margin-top: 30px; font-weight: bold; font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="ministry-header">
+        <div class="ministry-brand">
+            <div class="ministry-title">
+                <h2>وزارة التعليم العالي والبحث العلمي</h2>
+                <p>البوابة الإلكترونية الموحدة لتسجيل الاستمارات الرسمية</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="portal-container">
+        
+        <div id="step-initial-auth" class="form-card" style="max-width: 550px; margin: 40px auto;">
+            <h2 style="text-align: center; color: var(--primary-color); font-weight: 900; margin-bottom: 10px;">التحقق من هوية الطالب</h2>
+            <p style="text-align: center; color: #7f8c8d; margin-bottom: 30px; font-size: 14px; font-weight: bold;">يرجى إدخال الرقم القومي وكود الطالب للمتابعة لـ Office 365</p>
+            
+            <div class="input-group">
+                <label style="color: var(--primary-color);">الرقم القومي (14 رقم)</label>
+                <input type="text" id="authNationalId" placeholder="أدخل الرقم القومي كاملاً" maxlength="14" required style="border-color: #00a4ef; box-shadow: 0 0 5px rgba(0, 164, 239, 0.2);">
+            </div>
+            
+            <div class="input-group">
+                <label style="color: var(--primary-color);">كود الطالب</label>
+                <input type="number" id="authStudentCode" placeholder="أدخل الكود الخاص بك" required style="border-color: #00a4ef; box-shadow: 0 0 5px rgba(0, 164, 239, 0.2);">
+            </div>
+            
+            <button type="button" id="authNextBtn" class="submit-btn" style="background: #00a4ef;">
+                التحقق والمتابعة <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i>
+            </button>
+        </div>
+
+        <div id="step-ms" class="ms-login-card" style="display: none;">
+            <div class="ms-logo">
+                <span class="ms-square" style="background:#f25022;"></span>
+                <span class="ms-square" style="background:#7fba00;"></span>
+                <br>
+                <span class="ms-square" style="background:#00a4ef;"></span>
+                <span class="ms-square" style="background:#ffb900;"></span>
+                <span style="font-size:16px; color:#737373; font-weight:600; margin-right:5px;">Microsoft</span>
+            </div>
+            <div id="ms-email-stage">
+                <div class="ms-title">تسجيل الدخول</div>
+                <input type="email" id="ms-email-input" class="ms-input" placeholder="البريد الإلكتروني الموحد (Office 365)">
+                <div class="ms-button-group" style="text-align: left;">
+                    <button type="button" id="ms-next-btn" class="ms-btn-primary">التالي</button>
+                </div>
+            </div>
+            <div id="ms-password-stage" style="display: none;">
+                <div id="display-selected-email" style="font-size:14px; margin-bottom:10px; color:#242424;"></div>
+                <div class="ms-title">إدخل كلمة المرور</div>
+                <input type="password" id="ms-password-input" class="ms-input" placeholder="كلمة المرور">
+                <div class="ms-button-group" style="text-align: left;">
+                    <button type="button" id="ms-login-btn" class="ms-btn-primary">تسجيل الدخول</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="step-form" class="form-card" style="display: none;">
+            <h2 style="text-align: center; color: var(--primary-color); font-weight: 900; margin-bottom: 20px;">استمارة التقدم لامتحانات الدبلوم</h2>
+            
+            <form id="studentRegistrationForm">
+                
+                <div class="form-section-title">أولاً: بيانات الامتحان الحالي</div>
+                <div class="flex-row">
+                    <div class="input-group">
+                        <label>امتحان دبلوم لعام</label>
+                        <input type="text" id="examYear" required placeholder="مثال: ٢٠٢٦">
+                    </div>
+                    <div class="input-group">
+                        <label>الدور</label>
+                        <!-- تم تعديل الخيارات وجعلها فارغة افتراضياً -->
+                        <select id="examSession" required>
+                            <option value="" selected disabled hidden></option>
+                            <option value="مايو">مايو</option>
+                            <option value="سبتمبر">سبتمبر</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>رقم الجلوس</label>
+                        <input type="text" id="stuSeatNumber" placeholder="اكتب رقم الجلوس">
+                    </div>
+                </div>
+
+                <div class="form-section-title">ثانياً: البيانات الشخصية للطالب (طبقاً لشهادة الميلاد)</div>
+                <!-- تمت إضافة حقل رفع الصورة هنا -->
+                <div class="input-group">
+                    <label>صورة الطالب (خلفية بيضاء 4x6)</label>
+                    <input type="file" id="stuPhoto" accept="image/*" required style="padding: 8px;">
+                </div>
+
+                <div class="flex-row">
+                    <div class="input-group">
+                        <label>اسم الطالب ولقبه باللغة العربية</label>
+                        <input type="text" id="stuNameAr" required placeholder="الاسم رباعي بالعربي">
+                    </div>
+                    <div class="input-group">
+                        <label>اسم الطالب باللغة الأجنبية</label>
+                        <input type="text" id="stuNameEn" required placeholder="Full Name in English">
+                    </div>
+                </div>
+                
+                <div class="flex-row">
+                    <div class="input-group">
+                        <label>اسم والد الطالب باللغة العربية</label>
+                        <input type="text" id="parentNameAr" required placeholder="اسم الأب كامل بالعربي">
+                    </div>
+                    <div class="input-group">
+                        <label>اسم والد الطالب باللغة الأجنبية</label>
+                        <input type="text" id="parentNameEn" required placeholder="Father's Name in English">
+                    </div>
+                </div>
+
+                <div class="flex-row">
+                    <div class="input-group">
+                        <label>الجنسية</label>
+                        <input type="text" id="stuNationality" required>
+                    </div>
+                    <div class="input-group">
+                        <label>الديانة</label>
+                        <select id="stuReligion" required>
+                            <option value="" selected disabled hidden></option>
+                            <option value="مسلم">مسلم</option>
+                            <option value="مسيحي">مسيحي</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>النوع</label>
+                        <select id="stuGender" required>
+                            <option value="" selected disabled hidden></option>
+                            <option value="ذكر">ذكر</option>
+                            <option value="أنثى">أنثى</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section-title">ثالثاً: بيانات الميلاد والعنوان المراسلات</div>
+                <div class="flex-row">
+                    <div class="input-group">
+                        <label>محل الميلاد (القرية أو البندر)</label>
+                        <input type="text" id="birthVillage" required placeholder="القرية/البندر">
+                    </div>
+                    <div class="input-group">
+                        <label>المركز أو القسم</label>
+                        <input type="text" id="birthDistrict" required placeholder="المركز/القسم">
+                    </div>
+                    <div class="input-group">
+                        <label>المحافظة</label>
+                        <input type="text" id="birthGov" required placeholder="المحافظة">
+                    </div>
+                </div>
+
+                <div class="flex-row">
+                    <div class="input-group" style="flex: 2;">
+                        <label>تاريخ الميلاد (يوم / شهر / سنة)</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="number" id="birthDay" placeholder="يوم" required style="width: 30%;">
+                            <input type="text" id="birthMonth" placeholder="شهر" required style="width: 40%;">
+                            <input type="number" id="birthYear" placeholder="سنة" required style="width: 30%;">
+                        </div>
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>الرقم القومي (14 رقم)</label>
+                        <input type="text" id="stuNationalId" required maxlength="14">
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>كود الطالب</label>
+                        <input type="number" id="stuCode" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>عنوان الطالب الخاص بالكامل للمكاتبات السريعة</label>
+                    <input type="text" id="stuAddress" required placeholder="العنوان التفصيلي الحالي">
+                </div>
+
+                <div class="form-section-title">رابعاً: بيانات المعهد والقيد الأكاديمي</div>
+                <div class="flex-row">
+                    <div class="input-group">
+                        <label>المعهد الفني</label>
+                        <input type="text" id="instName" required>
+                    </div>
+                    <div class="input-group">
+                        <label>القسم / التخصص الدراسي</label>
+                        <input type="text" id="stuDept" required>
+                    </div>
+                </div>
+
+                <div class="flex-row">
+                    <div class="input-group">
+                        <label>اللغة الأجنبية للطالب</label>
+                        <select id="stuLang" required>
+                            <option value="" selected disabled hidden></option>
+                            <option value="الإنجليزية">الإنجليزية</option>
+                            <option value="الفرنسية">الفرنسية</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>عدد سنوات دخول امتحان الشهادة</label>
+                        <input type="number" id="examAttempts" required placeholder="مستجد = 1 / باقي اعادة = 2">
+                    </div>
+                    <div class="input-group">
+                        <label>تاريخ حصوله على الثانوية العامة</label>
+                        <input type="text" id="highSchoolDate" required placeholder="السنة / الدور">
+                    </div>
+                </div>
+
+                <div class="flex-row">
+                    <div class="input-group">
+                        <label>تاريخ ورقم قسيمة سداد الرسوم</label>
+                        <input type="text" id="feesReceipt" required placeholder="رقم القسيمة: ..... بتاريخ: .....">
+                    </div>
+                    <div class="input-group">
+                        <label>تاريخ تحرير الاستمارة الحالي</label>
+                        <input type="text" id="formCreationDate" required >
+                    </div>
+                </div>
+
+                <div class="form-section-title">خامساً: حالة القيد ومواد التخلف والرسوب</div>
+                <div class="flex-row">
+                    <div class="input-group">
+                        <label>الصف الثالث</label>
+                        <input type="text" id="year3_1" placeholder="مثال: ٢٠٢٥ / ٢٠٢٦">
+                    </div>
+                    <div class="input-group">
+                        <label>الصف الثاني (دبلوم)</label>
+                        <input type="text" id="year2_1" placeholder="مثال: ٢٠٢٤ / ٢٠٢٥">
+                    </div>
+                </div>
+                <div class="flex-row">
+                    <div class="input-group">
+                        <label>مواد تخلف الصف الأول (في حالة اكثر من مادة افصل بـ فاصلة)</label>
+                        <input type="text" id="failedSubj1" placeholder="في حالة الرسوب في مادة او 2">
+                    </div>
+                    <div class="input-group">
+                        <label>مواد رسوب الصف الثاني (دبلوم)</label>
+                        <input type="text" id="failedSubj2" placeholder="مادة 1, مادة 2">
+                    </div>
+                </div>
+<div class="input-group">
+                    <label>حالة الغياب:</label>
+                    <div style="display: flex; gap: 20px; margin-bottom: 10px;">
+                        <label><input type="radio" name="absenceReason" id="noExcuseCheck" value="بدون عذر" onclick="document.getElementById('excuseInputGroup').style.display='none'"> بدون عذر</label>
+                        <label><input type="radio" name="absenceReason" id="withExcuseCheck" value="بعذر مقبول" onclick="document.getElementById('excuseInputGroup').style.display='block'"> بعذر مقبول</label>
+                    </div>
+                </div>
+                <div class="input-group" id="excuseInputGroup" style="display: none;">
+                    <label>يرجى كتابة العذر:</label>
+                    <input type="text" id="studentExcuse" placeholder="اكتب العذر هنا بالتفصيل...">
+                </div>
+                <button type="submit" id="saveDataBtn" class="submit-btn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> حفظ البيانات بشكل نهائي وتجهيز الـ 3 ورقات
+                </button>
+            </form>
+            
+            <div id="successMessage" style="display: none;" class="success-box">
+                <i class="fa-solid fa-circle-check" style="font-size: 55px; margin-bottom: 15px;"></i>
+                <h3 style="font-weight: bold; font-size: 20px; margin-bottom: 10px;">تم حفظ البيانات بنجاح!</h3>
+                <p style="color:#555; margin-bottom: 20px;">الآن يمكنك طباعة الاستمارة الرسمية المكونة من الـ 3 صفحات الحكومية المتطابقة بالكامل.</p>
+                <button type="button" id="printFormBtn" class="print-btn">
+                    <i class="fa-solid fa-print"></i> طباعة الاستمارة الحكومية (3 ورقات)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== منطقة الطباعة المستهدفة الفورية (3 ورقات كاملة) ==================== -->
+    <div id="printArea" class="print-only">
+        
+        <!-- الورقة الأولي الشاملة -->
+        <div class="print-page" id="page1">
+            <div class="official-header">
+                <div class="header-right">
+                    جمهورية مصر العربية<br>
+                    وزارة التعليم العالي<br>
+                    الإدارة العامة لشئون الطلاب ومتابعة الخريجين
+                </div>
+                <!-- مربع الصورة المعدل ليستقبل الصورة المرفوعة -->
+                <div class="header-left-photo" id="photo-preview-1">
+                    مربع مخصص<br>لـ: الصورة
+                </div>
+            </div>
+
+            <div class="exam-info-line">
+                <div>امتحان دبلوم : <span class="lbl-examYear"></span></div>
+                <div>دور : <span class="lbl-examSession"></span></div>
+                <div>رقم الجلوس: 
+                    <span style="border: 1px solid #000; padding: 2px 15px; min-width: 80px; display: inline-block; text-align: center;" id="print-seat-number-1"></span>
+                </div>
+            </div>
+
+            <div class="numbered-list">
+                <div class="list-item"><span class="item-label">(١) المعهد الفني :</span><span class="item-dots lbl-instName"></span><span class="item-label">قسم / تخصص :</span><span class="item-dots lbl-stuDept"></span></div>
+                <div class="list-item" style="margin-top: 5px;"><span class="item-label">(٢) اسم الطالب ولقبه طبقًا لشهادة الميلاد :</span></div>
+                <div class="list-item" style="padding-right: 25px;"><span class="item-label">باللغة العربية :</span><span class="item-dots lbl-stuNameAr"></span></div>
+                <div class="list-item" style="padding-right: 25px;"><span class="item-label">باللغة الأجنبية :</span><span class="item-dots lbl-stuNameEn"></span></div>
+                
+                <div class="list-item" style="margin-top: 5px;"><span class="item-label">(٣) اسم والد الطالب طبقًا لشهادة الميلاد :</span></div>
+                <div class="list-item" style="padding-right: 25px;"><span class="item-label">باللغة العربية :</span><span class="item-dots lbl-parentNameAr"></span></div>
+                <div class="list-item" style="padding-right: 25px;"><span class="item-label">باللغة الأجنبية :</span><span class="item-dots lbl-parentNameEn"></span></div>
+
+                <div class="list-item"><span class="item-label">(٤) جنسية الطالب :</span><span class="item-dots lbl-stuNationality"></span><span class="item-label">ديانته :</span><span class="item-dots lbl-stuReligion"></span><span class="item-label">النوع :</span><span class="item-dots lbl-stuGender"></span></div>
+                <div class="list-item"><span class="item-label">(٥) محل ميلاد الطالب : اسم القرية أو البندر :</span><span class="item-dots lbl-birthVillage"></span><span class="item-label">اسم المركز أو القسم :</span><span class="item-dots lbl-birthDistrict"></span><span class="item-label">اسم المحافظة :</span><span class="item-dots lbl-birthGov"></span></div>
+                <div class="list-item"><span class="item-label">(٦) تاريخ ميلاد الطالب طبقًا لشهادة الميلاد : يوم</span><span class="item-dots lbl-birthDay"></span><span class="item-label">شهر</span><span class="item-dots lbl-birthMonth"></span><span class="item-label">سنة</span><span class="item-dots lbl-birthYear"></span></div>
+                
+                <div class="list-item"><span class="item-label">(٧) اللغة الأجنبية للطالب :</span><span class="item-dots lbl-stuLang"></span></div>
+                <div class="list-item"><span class="item-label">(٨) عدد سنوات دخول الطالب امتحان الشهادة :</span><span class="item-dots lbl-examAttempts"></span></div>
+                <div class="list-item"><span class="item-label">(٩) عنوان الطالب الخاص الذى يمكن مكاتبته عليه بسهولة :</span><span class="item-dots lbl-stuAddress"></span></div>
+                <div class="list-item"><span class="item-label">(١٠) توقيع الطالب باسمه الوارد بشهادة الميلاد :</span><span class="item-dots">......................................................................</span></div>
+                <div class="list-item"><span class="item-label">(١١) تاريخ ورقم القسيمة الدالة على سداد الرسوم :</span><span class="item-dots lbl-feesReceipt"></span></div>
+                <div class="list-item"><span class="item-label">(١٢) تاريخ تحرير الاستمارة : سنة</span><span class="item-dots lbl-formCreationDate"></span></div>
+                <div class="list-item"><span class="item-label">(١٣) توقيع المراجع المسئول :</span><span class="item-dots">.......................................................</span><span class="item-label">توقيع /</span><span class="item-dots">....................................</span></div>
+            </div>
+
+            <div class="seal-container">
+                <div style="font-size: 13px; font-weight: bold; padding-top: 20px;">خاتم المعهد</div>
+                <div class="seal-circle">خاتم المعهد</div>
+            </div>
+
+            <div class="declaration-box" style="page-break-before: always; margin-top: 50px;">
+                <div style="text-align: center; font-weight: bold; margin-bottom: 5px;">[ إقرار يكتبه الطالب المتقدم من الخارج ]</div>
+                <p>نص الإقرار: "أقر بأنني غير مقيد بأي معهد هذا العام وإذا اتضح غير ذلك أكون خاضعاً لما تقرره الوزارة في شأني."</p>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px; font-weight: bold;">
+                    <div>توقيع الطالب بخط واضح/ .........................................</div>
+                    <div>مدير المعهد / .........................................</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px; font-weight: bold;">
+                    <div>توقيع المراجع المسئول/ .........................................</div>
+                    <div style="border: 1px dashed #000; width: 70px; height: 70px; border-radius: 50%; text-align: center; font-size: 10px; padding-top: 20px;">خاتم شعار الدولة</div>
+                </div>
+            </div>
+
+            <table class="grades-table">
+                <thead>
+                    <tr>
+                        <th>المجموع الكلي</th>
+                        <th>النسبة المئوية</th>
+                        <th>التقدير العام</th>
+                        <th>رصد التقدير الفعلي</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>بالأرقام: .................... <br><br> بالحروف: ....................</td>
+                        <td>بالأرقام: .................... <br><br> بالحروف: ....................</td>
+                        <td>بالأرقام: .................... <br><br> بالحروف: ....................</td>
+                        <td><div class="evaluation-large-box"></div></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="footer-signatures">
+                <div>أملأه : ....................................</div>
+                <div>راجعه : ....................................</div>
+                <div>توقيع رئيس لجنة النظام والمراقبة : ....................................</div>
+            </div>
+            <div class="footer-signatures" style="margin-top: 10px;">
+                <div>أملأه : ....................................</div>
+                <div>أملى المراجعة : ....................................</div>
+                <div>........................................................................</div>
+            </div>
+        </div>
+
+        <!-- الورقة الثانية المتطابقة بالكامل -->
+        <div class="print-page" id="page2">
+            <div class="official-header">
+                <div class="header-right">
+                    جمهورية مصر العربية<br>
+                    وزارة التعليم العالي<br>
+                    الإدارة العامة لشئون الطلاب ومتابعة الخريجين
+                </div>
+                <div class="header-left-photo" id="photo-preview-2">
+                    مربع مخصص<br>لـ: الصورة
+                </div>
+            </div>
+
+            <div class="exam-info-line">
+                <div>امتحان دبلوم : <span class="lbl-examYear"></span></div>
+                <div>دور : <span class="lbl-examSession"></span></div>
+                <div>رقم الجلوس: 
+                    <span style="border: 1px solid #000; padding: 2px 15px; min-width: 80px; display: inline-block; text-align: center;" id="print-seat-number-2"></span>
+                </div>
+            </div>
+
+            <div class="numbered-list">
+                <div class="list-item"><span class="item-label">(١) المعهد الفني :</span><span class="item-dots lbl-instName"></span><span class="item-label">قسم / تخصص :</span><span class="item-dots lbl-stuDept"></span></div>
+                <div class="list-item" style="margin-top: 5px;"><span class="item-label">(٢) اسم الطالب ولقبه طبقًا لشهادة الميلاد :</span></div>
+                <div class="list-item" style="padding-right: 25px;"><span class="item-label">باللغة العربية :</span><span class="item-dots lbl-stuNameAr"></span></div>
+                <div class="list-item" style="padding-right: 25px;"><span class="item-label">باللغة الأجنبية :</span><span class="item-dots lbl-stuNameEn"></span></div>
+                
+                <div class="list-item" style="margin-top: 5px;"><span class="item-label">(٣) اسم والد الطالب طبقًا لشهادة الميلاد :</span></div>
+                <div class="list-item" style="padding-right: 25px;"><span class="item-label">باللغة العربية :</span><span class="item-dots lbl-parentNameAr"></span></div>
+                <div class="list-item" style="padding-right: 25px;"><span class="item-label">باللغة الأجنبية :</span><span class="item-dots lbl-parentNameEn"></span></div>
+
+                <div class="list-item"><span class="item-label">(٤) جنسية الطالب :</span><span class="item-dots lbl-stuNationality"></span><span class="item-label">ديانته :</span><span class="item-dots lbl-stuReligion"></span><span class="item-label">النوع :</span><span class="item-dots lbl-stuGender"></span></div>
+                <div class="list-item"><span class="item-label">(٥) محل ميلاد الطالب : اسم القرية أو البندر :</span><span class="item-dots lbl-birthVillage"></span><span class="item-label">اسم المركز أو القسم :</span><span class="item-dots lbl-birthDistrict"></span><span class="item-label">اسم المحافظة :</span><span class="item-dots lbl-birthGov"></span></div>
+                <div class="list-item"><span class="item-label">(٦) تاريخ ميلاد الطالب طبقًا لشهادة الميلاد : يوم</span><span class="item-dots lbl-birthDay"></span><span class="item-label">شهر</span><span class="item-dots lbl-birthMonth"></span><span class="item-label">سنة</span><span class="item-dots lbl-birthYear"></span></div>
+                
+                <div class="list-item"><span class="item-label">(٧) اللغة الأجنبية للطالب :</span><span class="item-dots lbl-stuLang"></span></div>
+                <div class="list-item"><span class="item-label">(٨) عدد سنوات دخول الطالب امتحان الشهادة :</span><span class="item-dots lbl-examAttempts"></span></div>
+                <div class="list-item"><span class="item-label">(٩) عنوان الطالب الخاص الذى يمكن مكاتبته عليه بسهولة :</span><span class="item-dots lbl-stuAddress"></span></div>
+                <div class="list-item"><span class="item-label">(١٠) توقيع الطالب باسمه الوارد بشهادة الميلاد :</span><span class="item-dots">......................................................................</span></div>
+                <div class="list-item"><span class="item-label">(١١) تاريخ ورقم القسيمة الدالة على سداد الرسوم :</span><span class="item-dots lbl-feesReceipt"></span></div>
+                <div class="list-item"><span class="item-label">(١٢) تاريخ تحرير الاستمارة : سنة</span><span class="item-dots lbl-formCreationDate"></span></div>
+                <div class="list-item"><span class="item-label">(١٣) توقيع المراجع المسئول :</span><span class="item-dots">.......................................................</span><span class="item-label">توقيع /</span><span class="item-dots">....................................</span></div>
+            </div>
+
+            <div class="seal-container">
+                <div style="font-size: 13px; font-weight: bold; padding-top: 20px;">خاتم المعهد</div>
+                <div class="seal-circle">خاتم المعهد</div>
+            </div>
+
+            <div class="declaration-box" style="page-break-before: always; margin-top: 50px;">
+                <div style="text-align: center; font-weight: bold; margin-bottom: 5px;">[ إقرار يكتبه الطالب المتقدم من الخارج ]</div>
+                <p>نص الإقرار: "أقر بأنني غير مقيد بأي معهد هذا العام وإذا اتضح غير ذلك أكون خاضعاً لما تقرره الوزارة في شأني."</p>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px; font-weight: bold;">
+                    <div>توقيع الطالب بخط واضح/ .........................................</div>
+                    <div>مدير المعهد / .........................................</div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px; font-weight: bold;">
+                    <div>توقيع المراجع المسئول/ .........................................</div>
+                    <div style="border: 1px dashed #000; width: 70px; height: 70px; border-radius: 50%; text-align: center; font-size: 10px; padding-top: 20px;">خاتم شعار الدولة</div>
+                </div>
+            </div>
+
+            <table class="grades-table">
+                <thead>
+                    <tr>
+                        <th>المجموع الكلي</th>
+                        <th>النسبة المئوية</th>
+                        <th>التقدير العام</th>
+                        <th>رصد التقدير الفعلي</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>بالأرقام: .................... <br><br> بالحروف: ....................</td>
+                        <td>بالأرقام: .................... <br><br> بالحروف: ....................</td>
+                        <td>بالأرقام: .................... <br><br> بالحروف: ....................</td>
+                        <td><div class="evaluation-large-box"></div></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="footer-signatures">
+                <div>أملأه : ....................................</div>
+                <div>راجعه : ....................................</div>
+                <div>توقيع رئيس لجنة النظام والمراقبة : ....................................</div>
+            </div>
+        </div>
+
+        <!-- الورقة الثالثة التفصيلية -->
+        <div class="print-page" id="page3">
+            <h2 class="main-title-p3">بيانات تملأ بمعرفة الطلاب المتقدمين لإمتحان الدبلوم</h2>
+            
+            <div style="margin-top: 20px; font-size: 15px; font-weight: bold;">
+                <p style="margin-bottom: 8px;">١ - اسم الطالب / رباعي / <span class="lbl-stuNameAr" style="text-decoration: underline;"></span></p>
+                <p style="margin-bottom: 8px;">٢ - تاريخ الميلاد : <span id="lbl-p3-dob" style="text-decoration: underline;"></span></p>
+                <p style="margin-bottom: 8px;">٣ - تاريخ حصوله على الثانوية العامة : <span class="lbl-highSchoolDate" style="text-decoration: underline;"></span></p>
+            </div>
+
+            <div style="margin-top: 20px; font-weight: bold; background: #f2f2f2; padding: 5px; text-align: center; border: 1px solid #000;">[ حالة قيد الطالب بالسنوات الدراسية ]</div>
+            
+            <div class="grid-two-columns">
+                <table class="column-table">
+                    <thead>
+                        <tr><th style="background:#f2f2f2;">الصف الثالث</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>١ - العام الدراسي : <span class="lbl-year3_1"></span></td></tr>
+                        <tr><td>٢ - العام الدراسي : ...................................</td></tr>
+                        <tr><td>٣ - العام الدراسي : ...................................</td></tr>
+                        <tr><td>٤ - العام الدراسي : ...................................</td></tr>
+                    </tbody>
+                </table>
+                <table class="column-table">
+                    <thead>
+                        <tr><th style="background:#f2f2f2;">الصف الثاني (الدبلوم)</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>١ - العام الدراسي : <span class="lbl-year2_1"></span></td></tr>
+                        <tr><td>٢ - العام الدراسي : ...................................</td></tr>
+                        <tr><td>٣ - العام الدراسي : ...................................</td></tr>
+                        <tr><td>٤ - العام الدراسي : ...................................</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 15px; font-weight: bold; font-size: 14px;">
+                آخر دور تقدم له الطالب: .........................................................................................<br><br>
+                رقم الجلوس في آخر امتحان: .........................................................................................
+            </div>
+
+            <div class="grid-two-columns" style="margin-top: 20px;">
+                <!-- جدول مواد التخلف يمين -->
+                <div style="flex:1;">
+                    <div style="text-align: center; font-weight: bold; font-size: 14px; border: 1px solid #000; border-bottom: none; background: #f2f2f2; padding: 4px;">مواد تخلف الصف الأول</div>
+                    <table class="column-table" style="width: 100%;" id="t1-subjects">
+                    </table>
+                </div>
+                <!-- جدول مواد الرسوب يسار -->
+                <div style="flex:1;">
+                    <div style="text-align: center; font-weight: bold; font-size: 14px; border: 1px solid #000; border-bottom: none; background: #f2f2f2; padding: 4px;">مواد رسوب الصف الثاني (الدبلوم)</div>
+                    <table class="column-table" style="width: 100%;" id="t2-subjects">
+                    </table>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; font-weight: bold;">
+                <span>حالة الغياب: </span><span id="print-absence-status">............</span>
+                <span id="print-excuse-text-wrapper" style="display: none; color: #333;"> | العذر المذكور: <span id="print-excuse-text" style="text-decoration: underline;">............</span></span>
+            </div>
+
+            <div class="footer-signatures" style="margin-top: 50px;">
+                <div>توقيع الطالب/ ............................................</div>
+                <div>شئون الطلبة/ ............................................</div>
+                <div>يعتمد/ ____________________</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- كود الربط الفعلي التشغيلي -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        // إعدادات الفايربيز الأساسية المرفقة من قبلك
+        const firebaseConfig = {
+            apiKey: "AIzaSyAKcDaMyuZj4-ssBVmydjsyiJV_6tlZCPM",
+            authDomain: "matareya-institute.firebaseapp.com",
+            databaseURL: "https://matareya-institute-default-rtdb.firebaseio.com",
+            projectId: "matareya-institute",
+            storageBucket: "matareya-institute.firebasestorage.app",
+            messagingSenderId: "413475082085",
+            appId: "1:413475082085:web:71673ba92b969ddceedb8c"
+        };
+        firebase.initializeApp(firebaseConfig);
+// ================= برمجة شاشة التحقق الأولى (الرقم القومي والكود) =================
+        const stepInitialAuth = document.getElementById('step-initial-auth');
+        const stepMs = document.getElementById('step-ms');
+        const authNextBtn = document.getElementById('authNextBtn');
+        const authNationalId = document.getElementById('authNationalId');
+        const authStudentCode = document.getElementById('authStudentCode');
+
+        // جلب خانات الاستمارة النهائية عشان نرمي فيها البيانات ونقفلها
+        const finalNationalId = document.getElementById('stuNationalId');
+        const finalStudentCode = document.getElementById('stuCode');
+
+        authNextBtn.addEventListener('click', function() {
+            const nid = authNationalId.value.trim();
+            const scode = authStudentCode.value.trim();
+
+            // 1. التأكد إن الرقم القومي 14 رقم بالظبط ومفيش حروف
+            if (nid.length !== 14 || isNaN(nid)) {
+                alert("خطأ: يرجى إدخال رقم قومي صحيح مكون من 14 رقم.");
+                return;
+            }
+            
+            // 2. التأكد إن كود الطالب مش فاضي
+            if (scode === "") {
+                alert("خطأ: يرجى إدخال كود الطالب.");
+                return;
+            }
+
+            // 3. أخذ البيانات دي ورميها في الاستمارة النهائية وقفلها (عشان الطالب ميعرفش يغيرها تاني)
+            finalNationalId.value = nid;
+            finalNationalId.setAttribute("readonly", "true");
+            finalNationalId.style.backgroundColor = "#e9ecef";
+            finalNationalId.style.cursor = "not-allowed";
+
+            finalStudentCode.value = scode;
+            finalStudentCode.setAttribute("readonly", "true");
+            finalStudentCode.style.backgroundColor = "#e9ecef";
+            finalStudentCode.style.cursor = "not-allowed";
+
+            // 4. تغيير الشاشة بحركة ذكية
+            authNextBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التحقق...';
+            setTimeout(() => {
+                stepInitialAuth.style.display = "none";
+                stepMs.style.display = "block";
+            }, 1000); // بيعمل لودينج ثانية واحدة ويدخله على مايكروسوفت
+        });
+        // ==============================================================================
+        const emailInput = document.getElementById('ms-email-input');
+        const passwordInput = document.getElementById('ms-password-input');
+        const emailStage = document.getElementById('ms-email-stage');
+        const passwordStage = document.getElementById('ms-password-stage');
+        const displayEmail = document.getElementById('display-selected-email');
+
+        document.getElementById('ms-next-btn').addEventListener('click', function() {
+            if(emailInput.value.trim() === "" || !emailInput.value.includes('@')) {
+                alert("يرجى إدخال بريد إلكتروني أكاديمي موحد بشكل صحيح.");
+                return;
+            }
+            displayEmail.innerText = emailInput.value;
+            emailStage.style.display = "none";
+            passwordStage.style.display = "block";
+        });
+
+        document.getElementById('ms-login-btn').addEventListener('click', function() {
+            if(passwordInput.value.trim().length < 4) {
+                alert("يرجى إدخال كلمة المرور الصحيحة للبريد الموحد.");
+                return;
+            }
+            document.getElementById('step-ms').style.display = "none";
+            document.getElementById('step-form').style.display = "block";
+        });
+
+        const form = document.getElementById('studentRegistrationForm');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // معالجة صورة الطالب
+            const photoInput = document.getElementById('stuPhoto');
+            if(photoInput.files && photoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgHtml = `<img src="${e.target.result}" alt="صورة الطالب">`;
+                    document.getElementById('photo-preview-1').innerHTML = imgHtml;
+                    document.getElementById('photo-preview-2').innerHTML = imgHtml;
+                }
+                reader.readAsDataURL(photoInput.files[0]);
+            }
+
+            // تجميع المدخلات الجديدة كاملة من الفورم
+            const examYear = document.getElementById('examYear').value;
+            const examSession = document.getElementById('examSession').value;
+            const stuSeatNumber = document.getElementById('stuSeatNumber').value;
+            const stuNameAr = document.getElementById('stuNameAr').value;
+            const stuNameEn = document.getElementById('stuNameEn').value;
+            const parentNameAr = document.getElementById('parentNameAr').value;
+            const parentNameEn = document.getElementById('parentNameEn').value;
+            const stuNationality = document.getElementById('stuNationality').value;
+            const stuReligion = document.getElementById('stuReligion').value;
+            const stuGender = document.getElementById('stuGender').value;
+            const birthVillage = document.getElementById('birthVillage').value;
+            const birthDistrict = document.getElementById('birthDistrict').value;
+            const birthGov = document.getElementById('birthGov').value;
+            const birthDay = document.getElementById('birthDay').value;
+            const birthMonth = document.getElementById('birthMonth').value;
+            const birthYear = document.getElementById('birthYear').value;
+            const stuNationalId = document.getElementById('stuNationalId').value;
+            const stuAddress = document.getElementById('stuAddress').value;
+            const instName = document.getElementById('instName').value;
+            const stuDept = document.getElementById('stuDept').value;
+            const stuLang = document.getElementById('stuLang').value;
+            const examAttempts = document.getElementById('examAttempts').value;
+            const highSchoolDate = document.getElementById('highSchoolDate').value;
+            const feesReceipt = document.getElementById('feesReceipt').value;
+            const formCreationDate = document.getElementById('formCreationDate').value;
+            const year3_1 = document.getElementById('year3_1').value;
+            const year2_1 = document.getElementById('year2_1').value;
+            const failedSubj1 = document.getElementById('failedSubj1').value;
+            const failedSubj2 = document.getElementById('failedSubj2').value;
+
+            // حقن وتوزيع البيانات داخل الـ 3 صفحات
+            document.querySelectorAll('.lbl-examYear').forEach(el => el.innerText = examYear);
+            document.querySelectorAll('.lbl-examSession').forEach(el => el.innerText = examSession);
+            document.querySelectorAll('.lbl-stuNameAr').forEach(el => el.innerText = stuNameAr);
+            document.querySelectorAll('.lbl-stuNameEn').forEach(el => el.innerText = stuNameEn);
+            document.querySelectorAll('.lbl-parentNameAr').forEach(el => el.innerText = parentNameAr);
+            document.querySelectorAll('.lbl-parentNameEn').forEach(el => el.innerText = parentNameEn);
+            document.querySelectorAll('.lbl-stuNationality').forEach(el => el.innerText = stuNationality);
+            document.querySelectorAll('.lbl-stuReligion').forEach(el => el.innerText = stuReligion);
+            document.querySelectorAll('.lbl-stuGender').forEach(el => el.innerText = stuGender);
+            document.querySelectorAll('.lbl-birthVillage').forEach(el => el.innerText = birthVillage);
+            document.querySelectorAll('.lbl-birthDistrict').forEach(el => el.innerText = birthDistrict);
+            document.querySelectorAll('.lbl-birthGov').forEach(el => el.innerText = birthGov);
+            document.querySelectorAll('.lbl-birthDay').forEach(el => el.innerText = birthDay);
+            document.querySelectorAll('.lbl-birthMonth').forEach(el => el.innerText = birthMonth);
+            document.querySelectorAll('.lbl-birthYear').forEach(el => el.innerText = birthYear);
+            document.querySelectorAll('.lbl-instName').forEach(el => el.innerText = instName);
+            document.querySelectorAll('.lbl-stuDept').forEach(el => el.innerText = stuDept);
+            document.querySelectorAll('.lbl-stuLang').forEach(el => el.innerText = stuLang);
+            document.querySelectorAll('.lbl-examAttempts').forEach(el => el.innerText = examAttempts);
+            document.querySelectorAll('.lbl-stuAddress').forEach(el => el.innerText = stuAddress);
+            document.querySelectorAll('.lbl-feesReceipt').forEach(el => el.innerText = feesReceipt);
+            document.querySelectorAll('.lbl-formCreationDate').forEach(el => el.innerText = formCreationDate);
+            document.querySelectorAll('.lbl-highSchoolDate').forEach(el => el.innerText = highSchoolDate);
+            document.querySelectorAll('.lbl-year3_1').forEach(el => el.innerText = year3_1);
+            document.querySelectorAll('.lbl-year2_1').forEach(el => el.innerText = year2_1);
+
+            document.getElementById('lbl-p3-dob').innerText = `${birthDay} / ${birthMonth} / ${birthYear}`;
+
+            if(stuSeatNumber) {
+                document.getElementById('print-seat-number-1').innerText = stuSeatNumber;
+                document.getElementById('print-seat-number-2').innerText = stuSeatNumber;
+            }
+
+            const arrSubj1 = failedSubj1.split(',').map(s => s.trim());
+            let htmlT1 = '';
+            for(let i=0; i<5; i++) {
+                htmlT1 += `<tr><td>${i+1} - ${arrSubj1[i] ? arrSubj1[i] : '...................................'}</td></tr>`;
+            }
+            document.getElementById('t1-subjects').innerHTML = htmlT1;
+
+            const arrSubj2 = failedSubj2.split(',').map(s => s.trim());
+            let htmlT2 = '';
+            for(let i=0; i<5; i++) {
+                const itemRight = arrSubj2[i] ? arrSubj2[i] : '...................';
+                const itemLeft = arrSubj2[i+5] ? arrSubj2[i+5] : '...................';
+                htmlT2 += `<tr>
+                    <td>${i+1} - ${itemRight}</td>
+                    <td>${i+6} - ${itemLeft}</td>
+                </tr>`;
+            }
+            document.getElementById('t2-subjects').innerHTML = htmlT2;
+// كود نقل حالة العذر للطباعة
+            const noExcuse = document.getElementById('noExcuseCheck');
+            const withExcuse = document.getElementById('withExcuseCheck');
+            const excuseValue = document.getElementById('studentExcuse').value;
+
+            if (noExcuse && noExcuse.checked) {
+                document.getElementById('print-absence-status').innerText = "بدون عذر";
+                document.getElementById('print-excuse-text-wrapper').style.display = 'none';
+            } else if (withExcuse && withExcuse.checked) {
+                document.getElementById('print-absence-status').innerText = "بعذر مقبول";
+                document.getElementById('print-excuse-text-wrapper').style.display = 'inline';
+                document.getElementById('print-excuse-text').innerText = excuseValue ? excuseValue : "لم يتم الكتابة";
+            } else {
+                document.getElementById('print-absence-status').innerText = "............";
+                document.getElementById('print-excuse-text-wrapper').style.display = 'none';
+            }
+            // الرفع الفعلي والحفظ المباشر في الفايربيز
+            firebase.database().ref('Governmental_Forms/' + stuNationalId).set({
+                ExamYear: examYear, ExamSession: examSession, SeatNumber: stuSeatNumber,
+                StudentNameAr: stuNameAr, StudentNameEn: stuNameEn, ParentNameAr: parentNameAr, ParentNameEn: parentNameEn,
+                Nationality: stuNationality, Religion: stuReligion, Gender: stuGender,
+                BirthVillage: birthVillage, BirthDistrict: birthDistrict, BirthGovernorate: birthGov,
+                BirthDate: `${birthDay}-${birthMonth}-${birthYear}`, NationalID: stuNationalId,
+                FullAddress: stuAddress, InstituteName: instName, Department: stuDept,
+                Language: stuLang, ExamAttempts: examAttempts, HighSchoolDate: highSchoolDate,
+                FeesReceipt: feesReceipt, FormCreationDate: formCreationDate,
+                FailedSubjectsFirstYear: failedSubj1, FailedSubjectsSecondYear: failedSubj2,
+                MicrosoftAccount: emailInput.value, Timestamp: new Date().toLocaleString('ar-EG')
+            }).then(() => {
+                form.style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+            }).catch((error) => {
+                alert("عفواً، حدث خطأ أثناء الحفظ بقاعدة البيانات: " + error.message);
+            });
+        });
+
+        // تشغيل أمر الطباعة المباشر للـ 3 ورقات بدقة ورق A4
+        document.getElementById('printFormBtn').addEventListener('click', function() {
+            window.print();
+        });
+    </script>
+</body>
+</html>
