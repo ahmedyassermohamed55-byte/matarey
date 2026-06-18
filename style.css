@@ -1177,6 +1177,7 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
 
 /* تنسيق شكل خانة البحث لتبدو احترافية بجانب المسارات */
 .search-wrapper {
+    position: relative; /* التعديل هنا: السطر ده مهم جداً عشان القائمة تفتح تحته بالظبط */
     display: flex;
     align-items: center;
     background: rgba(255, 255, 255, 0.07);
@@ -1186,7 +1187,6 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
     min-width: 280px;
     transition: all 0.3s ease;
 }
-
 .search-wrapper:focus-within {
     border-color: #4facfe;
     box-shadow: 0 0 10px rgba(79, 172, 254, 0.3);
@@ -1393,15 +1393,25 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
 }
 
 /* =======================================================
-   1. إصلاح الفوتر في الكمبيوتر (بدون رفع الموقع أو إخفاء المحتوى)
+   1. إصلاح الفوتر في الكمبيوتر (تثبيته دائماً في الأسفل)
 ======================================================= */
+.page-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
 .main-content {
-    min-height: 100vh !important; /* بيخلي المحتوى يطول لأسفل الشاشة ويدفع الفوتر للأسفل بأمان */
     display: flex !important;
     flex-direction: column !important;
+    flex-grow: 1 !important;
+    min-height: 100vh !important;
 }
+
 .main-footer {
-    margin-top: auto !important; /* بيزق الفوتر لآخر الصفحة ويقفل الفراغ الأبيض */
+    margin-top: auto !important;
+    width: 100%;
+    position: relative;
+    z-index: 50;
 }
 
 /* =======================================================
@@ -1529,3 +1539,75 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
         min-width: 750px !important; /* بيجبر الجدول إنه يفرد بالعرض تماماً */
     }
 }
+
+/* =================================================================
+   تصميم قائمة اقتراحات البحث الذكي (الشكل الاحترافي)
+   ================================================================= */
+
+/* 1. المربع الكبير اللي بيضم الاقتراحات كلها */
+.search-suggestions-box {
+    position: absolute;
+    top: 120%; /* بيخلي القائمة تظهر تحت شريط البحث بمسافة بسيطة */
+    left: 0;
+    width: 100%;
+    background: rgba(15, 20, 38, 0.95); /* لون داكن وشفاف شيك جداً */
+    backdrop-filter: blur(10px); /* تأثير الزجاج المغبش */
+    border: 1px solid rgba(79, 172, 254, 0.4); /* إطار أزرق مضيء خفيف */
+    border-radius: 15px;
+    max-height: 350px; /* أقصى طول للقائمة عشان لو النتائج كتير */
+    overflow-y: auto; /* بيشغل بكرة السكرول لو النتائج كتير */
+    z-index: 10000;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: none; /* مخفية في البداية والجافاسكريبت بيظهرها تلقائي */
+    padding: 10px 0;
+    direction: rtl; /* تظبيط اتجاه الكلام لليمين */
+}
+
+/* 2. تظبيط شكل شريط التمرير (السكرول) جوه قائمة البحث */
+.search-suggestions-box::-webkit-scrollbar {
+    width: 6px;
+}
+.search-suggestions-box::-webkit-scrollbar-thumb {
+    background: #4facfe;
+    border-radius: 10px;
+}
+
+/* 3. تصميم السطر الواحد (النتيجة الواحدة) جوا القائمة */
+.suggestion-item {
+    padding: 12px 20px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 15px; /* المسافة بين الشارة الملونة والكلمة */
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* خط خفيف بين كل نتيجة والتانية */
+}
+
+/* بنشيل الخط من آخر نتيجة عشان الشكل يبقى نظيف */
+.suggestion-item:last-child {
+    border-bottom: none; 
+}
+
+/* 4. تأثير لما تقف بالماوس على النتيجة */
+.suggestion-item:hover {
+    background: rgba(79, 172, 254, 0.15); /* لون أزرق خفيف جداً في الخلفية */
+    padding-right: 25px; /* حركة سحرية: النتيجة بتتحرك يمين سنة صغيرة */
+    color: #FFD700; /* الكلمة نفسها بتنور أصفر ذهبي */
+}
+
+/* 5. تصميم الشارة الملونة (كلمة: شعبة / مادة / معهد) */
+.suggestion-badge {
+    background: linear-gradient(135deg, #8e2de2, #4facfe); /* لون متدرج موف في أزرق */
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 900;
+    min-width: 55px; /* تثبيت العرض عشان يبقوا كلهم تحت بعض بانتظام */
+    text-align: center;
+    box-shadow: 0 0 10px rgba(142, 45, 226, 0.4); /* توهج خفيف حوالين الشارة */
+}
+
