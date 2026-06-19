@@ -202,6 +202,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // السحر الحقيقي لحل مشكلة اللمس والموبايل بدون تعارض وبدون تغيير الحجم
     document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('mouseleave', () => {
+    // لو القائمة مقفولة، امسح الكلاس بمجرد ما الماوس يبعد
+    if (sidebar.classList.contains('sidebar-collapsed')) {
+        item.classList.remove('touch-hover');
+    }
+});
         item.addEventListener('click', (e) => {
             const isCollapsed = sidebar.classList.contains('sidebar-collapsed');
             const isDropdown = item.classList.contains('dropdown-container');
@@ -1112,9 +1118,12 @@ document.addEventListener('DOMContentLoaded', function() {
             ];
             renderBreadcrumbs();
             
-            // قفل القائمة ورفع الشاشة لفوق
-            document.querySelector(".sidhedar").classList.add("sidebar-collapsed");
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+           // قفل القوائم وإلغاء التعليقة
+closeAllDropdowns();
+document.querySelectorAll('.nav-item.touch-hover').forEach(i => i.classList.remove('touch-hover'));
+
+document.querySelector(".sidhedar").classList.add("sidebar-collapsed");
+window.scrollTo({ top: 0, behavior: 'auto' }); // غيرنا smooth لـ auto لقتل اللاج
         });
     }
 
