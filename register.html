@@ -199,7 +199,7 @@
                 <div class="flex-row">
                     <div class="input-group">
                         <label>امتحان دبلوم لعام</label>
-                        <input type="text" id="examYear" required placeholder="مثال: ٢٠٢٦">
+                        <input type="text" id="examYear" required>
                     </div>
                     <div class="input-group">
                         <label>الدور</label>
@@ -440,10 +440,10 @@
                 <div class="list-item"><span class="item-label">(٧) اللغة الأجنبية للطالب :</span><span class="item-dots lbl-stuLang"></span></div>
                 <div class="list-item"><span class="item-label">(٨) عدد سنوات دخول الطالب امتحان الشهادة :</span><span class="item-dots lbl-examAttempts"></span></div>
                 <div class="list-item"><span class="item-label">(٩) عنوان الطالب الخاص الذى يمكن مكاتبته عليه بسهولة :</span><span class="item-dots lbl-stuAddress"></span></div>
-                <div class="list-item"><span class="item-label">(١٠) توقيع الطالب باسمه الوارد بشهادة الميلاد :</span><span class="item-dots">......................................................................</span></div>
+                <div class="list-item"><span class="item-label">(١٠) توقيع الطالب باسمه الوارد بشهادة الميلاد :</span><span class="item-dots"></span></div>
                 <div class="list-item"><span class="item-label">(١١) تاريخ ورقم القسيمة الدالة على سداد الرسوم :</span><span class="item-dots lbl-feesReceipt"></span></div>
                 <div class="list-item"><span class="item-label">(١٢) تاريخ تحرير الاستمارة : سنة</span><span class="item-dots lbl-formCreationDate"></span></div>
-                <div class="list-item"><span class="item-label">(١٣) توقيع المراجع المسئول :</span><span class="item-dots">.......................................................</span><span class="item-label">توقيع /</span><span class="item-dots">....................................</span></div>
+                <div class="list-item"><span class="item-label">(١٣) توقيع المراجع المسئول :</span><span class="item-dots"></span><span class="item-label">توقيع /</span><span class="item-dots"></span></div>
             </div>
 
             <div class="seal-container">
@@ -732,6 +732,8 @@
         });
 
         document.getElementById('ms-login-btn').addEventListener('click', function() {
+            // إجبار الموبايل على عرض الصفحة بحجم الكمبيوتر
+document.querySelector("meta[name=viewport]").setAttribute("content", "width=980");
             if(passwordInput.value.trim().length < 4) {
                 alert("يرجى إدخال كلمة المرور الصحيحة للبريد الموحد.");
                 return;
@@ -877,6 +879,7 @@
 
         // تشغيل أمر الطباعة المباشر للـ 3 ورقات بدقة ورق A4
         document.getElementById('printFormBtn').addEventListener('click', function() {
+            document.querySelector("meta[name=viewport]").setAttribute("content", "width=device-width, initial-scale=1.0");
             window.print();
         });
     </script>
