@@ -422,14 +422,15 @@ body {
     white-space: nowrap;
     background: linear-gradient(270deg, #FFD700, #FFA500, #FFF7C2, #FFD700);
     background-size: 400% 400%;
-    -webkit-background-clip: text;
+    -webkit-background-clip: text; 
+    background-clip: text; /* <--- تمت إضافة هذا السطر السحري لحل التحذير */
     -webkit-text-fill-color: transparent;
+    color: transparent; /* <--- يفضل أيضاً إضافة هذا السطر لحل أي تحذيرات مشابهة */
     animation: liquid-glow 4s ease infinite;
     filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
-    margin-right: 32px; /* لموازنة المساحة مع السهم الأيمن */
+    margin-right: 32px; 
     transition: opacity 0.3s ease;
 }
-
 @keyframes liquid-glow {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -1335,7 +1336,8 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
 .scroll-to-top {
     position: fixed;
     bottom: 20px;
-    left: 20px; /* حطناه على الشمال علشان القائمة الجانبية على اليمين */
+    right: 20px; /* <--- خليناها يمين */
+    left: auto;  /* <--- ضيف دي عشان نلغي اليسار */
     background: linear-gradient(135deg, #1a365d, #0d1b2a); /* لون أزرق غامق شيك يتماشى مع الموقع */
     color: white;
     border: none;
@@ -1344,7 +1346,7 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
     height: 45px;
     font-size: 20px;
     cursor: pointer;
-    z-index: 9999; /* عشان يفضل فوق كل حاجة في الصفحة */
+   z-index: 100000; /* <--- زودنا الأصفار عشان يعلى فوق كل حاجة */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     
     /* تأثيرات الظهور والاختفاء */
@@ -1379,7 +1381,8 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
         height: 40px;
         font-size: 18px;
         bottom: 15px;
-        left: 15px;
+        right: 15px; /* <--- يمين للموبايل */
+        left: auto;
     }
 }
 
@@ -1421,14 +1424,15 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
         min-height: 100vh !important;
     }
 
-    /* 2. القائمة الجانبية (إظهار الخانات السفلية) */
-    .sidhedar {
-        height: 100dvh !important; 
-        width: 400px !important; 
-        max-width: 100vw !important; 
-        z-index: 10000 !important; 
-        overflow: visible !important; 
-    }
+   .sidhedar {
+    height: calc(100dvh - 70px) !important; /* هيقلل الطول ويرفعها لفوق */
+    border-bottom-left-radius: 25px; /* عشان تعمل كيرف شيك من تحت */
+    /* باقي أكوادك كما هي */
+    width: 400px !important; 
+    max-width: 100vw !important; 
+    z-index: 10000 !important; 
+    overflow: visible !important; 
+}
     .sidhedar.sidebar-collapsed { width: 85px !important; }
     
     .sidebar-nav {
@@ -1486,7 +1490,7 @@ html[dir="ltr"] .sidebar-nav .nav-list li .nav-link .nav-label {
         margin: 15px 0 !important;
     }
     .typing-container {
-        display: block !important;
+        min-height: auto !important; /* <--- ضيف السطر ده */
         width: 100% !important;
         max-width: 100% !important;
         padding: 20px 15px !important; 
@@ -1821,4 +1825,12 @@ body.dark-theme #paymentStudentForm input {
 /* الكود المسؤول عن سنترة صفحات المعهد ودفع المصاريف بالمللي لما القائمة تتقفل */
 .sidhedar.sidebar-collapsed ~ .special-page-container {
     padding-left: 85px !important;
+}
+
+@media screen and (min-width: 981px) {
+    .special-page-content {
+        max-width: 900px !important; /* هيمنع المحتوى إنه يفرش بعرض الشاشة */
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
 }
